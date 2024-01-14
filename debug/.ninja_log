@@ -1,0 +1,5 @@
+# ninja log v5
+14747	22701	1705223427955129332	dmrg	761f1b3a96713c3f
+1	5876	1705223400866701611	CMakeFiles/dmrg.dir/src/myutil.cpp.o	2a1c07186998a69f
+3	5065	1705223400053688408	CMakeFiles/dmrg.dir/src/operators.cpp.o	7b58f7ebca4df4eb
+3	14747	1705223419993004298	CMakeFiles/dmrg.dir/src/dmrg.cpp.o	20873c82f49a5a6f
