@@ -17,6 +17,16 @@ int main(int argc, char *argv[]) {
   namespace mpi = boost::mpi;
   mpi::environment env;
   mpi::communicator world;
+  if (argc == 1) {
+    std::cout
+        << "Usage: \n mpirun -np <num_proc> ./dmrg <params file> --D=<list of bond dimension, connected by comma>\n";
+    return 0;
+  } else if (argc == 2) {
+    std::cout
+        << "The complete usage can be: Usage: \n mpirun -np <num_proc> ./dmrg <params file> --D=<list of bond dimension, connected by comma>"
+        << std::endl;
+  }
+
   CaseParams params(argv[1]);
 
   if (world.rank() == 0 && world.size() > 1 && params.TotalThreads > 2) {
@@ -49,6 +59,29 @@ int main(int argc, char *argv[]) {
   startTime = clock();
   OperatorInitial();
   const SiteVec<TenElemT, U1U1QN> sites = SiteVec<TenElemT, U1U1QN>(N, pb_out);
+
+  std::vector<size_t> input_D_set;
+  bool has_bond_dimension_parameter = ParserBondDimension(
+      argc, argv,
+      input_D_set);
+  size_t DMRG_time = input_D_set.size();
+  std::vector<size_t> MaxLanczIterSet(DMRG_time);
+  if (has_bond_dimension_parameter) {
+    MaxLanczIterSet.back() = params.MaxLanczIter;
+    if (DMRG_time > 1) {
+      size_t MaxLanczIterSetSpace;
+      MaxLanczIterSet[0] = 3;
+      MaxLanczIterSetSpace = (params.MaxLanczIter - 3) / (DMRG_time - 1);
+      std::cout << "Setting MaxLanczIter as : [" << MaxLanczIterSet[0] << ", ";
+      for (size_t i = 1; i < DMRG_time - 1; i++) {
+        MaxLanczIterSet[i] = MaxLanczIterSet[i - 1] + MaxLanczIterSetSpace;
+        std::cout << MaxLanczIterSet[i] << ", ";
+      }
+      std::cout << MaxLanczIterSet.back() << "]" << std::endl;
+    } else {
+      std::cout << "Setting MaxLanczIter as : [" << MaxLanczIterSet[0] << "]" << std::endl;
+    }
+  }
 
   /****** Initialize MPS ******/
   FiniteMPST mps(sites);
@@ -110,18 +143,18 @@ int main(int argc, char *argv[]) {
     size_t y = i % (2 * Ly), x = i / (2 * Ly);
     if (y < 2 * Ly - 2) {
       size_t site1 = i, site2 = i + 2;
-      mpo_gen.AddTerm(-ts, bupcF, site1, bupa, site2);
-      mpo_gen.AddTerm(-ts, bdnc, site1, Fbdna, site2);
-      mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2);
-      mpo_gen.AddTerm(ts, bdna, site1, Fbdnc, site2);
+      mpo_gen.AddTerm(-ts, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-ts, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(ts, bdna, site1, Fbdnc, site2, f);
       cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
 
       site1++;
       site2++;
-      mpo_gen.AddTerm(-td, bupcF, site1, bupa, site2);
-      mpo_gen.AddTerm(-td, bdnc, site1, Fbdna, site2);
-      mpo_gen.AddTerm(td, bupaF, site1, bupc, site2);
-      mpo_gen.AddTerm(td, bdna, site1, Fbdnc, site2);
+      mpo_gen.AddTerm(-td, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-td, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(td, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(td, bdna, site1, Fbdnc, site2, f);
       cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     } else if (Ly > 2) {
       size_t site1 = i - 2 * Ly + 2, site2 = i;
@@ -138,39 +171,102 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(ts, bdna, site1, Fbdnc, site2, f);
       cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
-
     }
   }
 
-  //intra band hopping
+  //intra band diagonal hopping, tsd_xy
   for (size_t i = 0; i < N - (2 * Ly); i += 2) {
     size_t y = i % (2 * Ly), x = i / (2 * Ly);
     if (y < 2 * Ly - 2) {
-      size_t site1 = i, site2 = i;
-      mpo_gen.AddTerm(-ts, bupcF, site1, bupa, site2);
-      mpo_gen.AddTerm(-ts, bdnc, site1, Fbdna, site2);
-      mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2);
-      mpo_gen.AddTerm(ts, bdna, site1, Fbdnc, site2);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
-
-      site1++;
-      site2++;
-      mpo_gen.AddTerm(-td, bupcF, site1, bupa, site2);
-      mpo_gen.AddTerm(-td, bdnc, site1, Fbdna, site2);
-      mpo_gen.AddTerm(td, bupaF, site1, bupc, site2);
-      mpo_gen.AddTerm(td, bdna, site1, Fbdnc, site2);
+      size_t site1 = i, site2 = i + 3 + (2 * Ly);
+      mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
       cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     } else if (Ly > 2) {
-
+      //winding term
+      size_t site1 = i, site2 = i + 3;
+      mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     }
 
+    if (y > 0) {
+      size_t site1 = i, site2 = i + (2 * Ly) - 1;
+      mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+    } else if (Ly > 2) {
+      //winding term
+      size_t site1 = i, site2 = i + (4 * Ly) - 1;
+      mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+    }
+  }
+
+  //intra band nn hopping, tsd_x^2-y^2
+  for (size_t i = 0; i < N; i += 2) {
+    size_t y = i % (2 * Ly), x = i / (2 * Ly);
+    //horizontal
+    if (i < N - (2 * Ly)) {
+      size_t site1 = i, site2 = i + (2 * Ly) + 1;
+      mpo_gen.AddTerm(-tsd_nn, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-tsd_nn, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(tsd_nn, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(tsd_nn, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+    }
+    //vertical
+    if (y < 2 * Ly - 2) {
+      size_t site1 = i, site2 = i + 3;
+      mpo_gen.AddTerm(tsd_nn, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(tsd_nn, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(-tsd_nn, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(-tsd_nn, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+    } else if (Ly > 2) {
+      //winding term
+      size_t site1 = i - (2 * Ly) + 3, site2 = i;
+      mpo_gen.AddTerm(tsd_nn, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(tsd_nn, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(-tsd_nn, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(-tsd_nn, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+    }
   }
 
   auto mro = mpo_gen.GenMatReprMPO();
   cout << "MRO generated." << endl;
 
   // dmrg
-  double e0 = gqmps2::FiniteDMRG(mps, mro, sweep_params, world);
+  double e0;
+  if (!has_bond_dimension_parameter) {
+    e0 = gqmps2::FiniteDMRG(mps, mro, sweep_params, world);
+  } else {
+    for (size_t i = 0; i < DMRG_time; i++) {
+      size_t D = input_D_set[i];
+      if (world.rank() == 0) {
+        std::cout << "D_max = " << D << std::endl;
+      }
+      gqmps2::FiniteVMPSSweepParams sweep_params(
+          params.Sweeps,
+          D, D, params.CutOff,
+          gqmps2::LanczosParams(params.LanczErr, MaxLanczIterSet[i]),
+          params.noise
+      );
+      e0 = gqmps2::FiniteDMRG(mps, mro, sweep_params, world);
+    }
 
+  }
+  endTime = clock();
+  cout << "CPU Time : " << (double) (endTime - startTime) / CLOCKS_PER_SEC << "s" << endl;
   return 0;
 }

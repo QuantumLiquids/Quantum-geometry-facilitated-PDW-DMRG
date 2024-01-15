@@ -127,6 +127,6 @@ link_libraries(
 
 #add_executable(vmps src/vmps.cpp src/myutil.cpp src/operators.cpp)
 add_executable(dmrg src/dmrg.cpp src/myutil.cpp src/operators.cpp)
-#add_executable(measure1 src/measure1.cpp src/myutil.cpp src/operators.cpp)
-#add_executable(measure2 src/measure2.cpp src/myutil.cpp src/operators.cpp)
+add_executable(measure1 src/measure1.cpp src/myutil.cpp src/operators.cpp)
+add_executable(measure2 src/measure2.cpp src/myutil.cpp src/operators.cpp)
 #add_executable(measureSC src/measureSC.cpp src/myutil.cpp src/operators.cpp)
