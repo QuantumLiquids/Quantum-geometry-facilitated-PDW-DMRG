@@ -1,3 +1,0 @@
-/home/haoxinwang/GitHub/WenHuangPDWModel/debug/CMakeFiles/dmrg.dir
-/home/haoxinwang/GitHub/WenHuangPDWModel/debug/CMakeFiles/edit_cache.dir
-/home/haoxinwang/GitHub/WenHuangPDWModel/debug/CMakeFiles/rebuild_cache.dir
