@@ -111,8 +111,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  /*******  Calculation Subroutine *******/
-  // creation the mpo/mro by the newest phonon displacement data
+  /*******  Creation MPO/MRO *******/
   gqmps2::MPOGenerator<TenElemT, U1U1QN> mpo_gen(sites, qn0);
   for (size_t i = 0; i < N; i = i + 2) {
     mpo_gen.AddTerm(-Uss, Uterm, i);
@@ -124,7 +123,6 @@ int main(int argc, char *argv[]) {
   //horizontal hopping inner band
   for (size_t i = 0; i < N - 2 * Ly; i = i + 2) {
     size_t site1 = i, site2 = i + 2 * Ly;
-    size_t x = i / (2 * Ly);
     mpo_gen.AddTerm(-ts, bupcF, site1, bupa, site2, f);
     mpo_gen.AddTerm(-ts, bdnc, site1, Fbdna, site2, f);
     mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2, f);
@@ -166,10 +164,10 @@ int main(int argc, char *argv[]) {
 
       site1++;
       site2++;
-      mpo_gen.AddTerm(-ts, bupcF, site1, bupa, site2, f);
-      mpo_gen.AddTerm(-ts, bdnc, site1, Fbdna, site2, f);
-      mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2, f);
-      mpo_gen.AddTerm(ts, bdna, site1, Fbdnc, site2, f);
+      mpo_gen.AddTerm(-td, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-td, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(td, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(td, bdna, site1, Fbdnc, site2, f);
       cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     }
   }
@@ -178,15 +176,33 @@ int main(int argc, char *argv[]) {
   for (size_t i = 0; i < N - (2 * Ly); i += 2) {
     size_t y = i % (2 * Ly), x = i / (2 * Ly);
     if (y < 2 * Ly - 2) {
+      // left-upper-s <====> right-lower-d_xy
       size_t site1 = i, site2 = i + 3 + (2 * Ly);
       mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
       cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+
+      // left-upper-d_xy <====> right-lower-s
+      site1 = i+1; site2 = i+2+(2*Ly);
+      mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+
     } else if (Ly > 2) {
-      //winding term
+      //winding term, incomplete
+      // left-upper-s <====> right-lower-d_xy
       size_t site1 = i, site2 = i + 3;
+      mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      // left-upper-d_xy <====> right-lower-s
+      site1 += 1; site2 = site2 - 1;
       mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
@@ -195,7 +211,16 @@ int main(int argc, char *argv[]) {
     }
 
     if (y > 0) {
+      // left-lower-s <====> right-upper-d_xy
       size_t site1 = i, site2 = i + (2 * Ly) - 1;
+      mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+
+      // left-lower-d_xy <====> right-upper-s
+      site1 = i+1; site2 = site2-1;
       mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
@@ -203,7 +228,16 @@ int main(int argc, char *argv[]) {
       cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     } else if (Ly > 2) {
       //winding term
+      // left-lower-s <====> right-upper-d_xy
       size_t site1 = i, site2 = i + (4 * Ly) - 1;
+      mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
+      mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
+      mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
+      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+
+      // left-lower-d_xy <====> right-upper-s
+      site1 = i+1; site2 = site2-1;
       mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
