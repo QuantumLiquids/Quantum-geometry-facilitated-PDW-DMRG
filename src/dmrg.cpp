@@ -17,14 +17,18 @@ int main(int argc, char *argv[]) {
   namespace mpi = boost::mpi;
   mpi::environment env;
   mpi::communicator world;
+
   if (argc == 1) {
-    std::cout
-        << "Usage: \n mpirun -np <num_proc> ./dmrg <params file> --D=<list of bond dimension, connected by comma>\n";
+    if (world.rank() == 0) {
+      std::cout
+          << "Usage: \n mpirun -np <num_proc> ./dmrg <params file> --D=<list of bond dimension, connected by comma>\n";
+    }
     return 0;
   } else if (argc == 2) {
-    std::cout
-        << "The complete usage can be: Usage: \n mpirun -np <num_proc> ./dmrg <params file> --D=<list of bond dimension, connected by comma>"
-        << std::endl;
+    if (world.rank() == 0)
+      std::cout
+          << "The complete usage can be: Usage: \n mpirun -np <num_proc> ./dmrg <params file> --D=<list of bond dimension, connected by comma>"
+          << std::endl;
   }
 
   CaseParams params(argv[1]);
@@ -42,11 +46,12 @@ int main(int argc, char *argv[]) {
   size_t N = 2 * Lx * Ly;//two orbital
   double ts = params.ts, td = params.td, tsd_nn = params.tsd_nn, tsd_xy = params.tsd_xy;
   double Uss = params.Uss, Udd = params.Udd, Usd = params.Usd;
-  cout << "System size = (" << Lx << "," << Ly << ")" << endl;
-  cout << "The number of electron sites =" << Lx * Ly << endl;
-  cout << "Model parameter: ts :" << ts << ", Uss :" << Uss
-       << endl;
-
+  if (world.rank() == 0) {
+    cout << "System size = (" << Lx << "," << Ly << ")" << endl;
+    cout << "The number of electron sites =" << Lx * Ly << endl;
+    cout << "Model parameter: ts :" << ts << ", Uss :" << Uss
+         << endl;
+  }
   /****** DMRG parameter *******/
   gqmps2::FiniteVMPSSweepParams sweep_params(
       params.Sweeps,
@@ -72,14 +77,18 @@ int main(int argc, char *argv[]) {
       size_t MaxLanczIterSetSpace;
       MaxLanczIterSet[0] = 3;
       MaxLanczIterSetSpace = (params.MaxLanczIter - 3) / (DMRG_time - 1);
-      std::cout << "Setting MaxLanczIter as : [" << MaxLanczIterSet[0] << ", ";
+      if (world.rank() == 0)
+        std::cout << "Setting MaxLanczIter as : [" << MaxLanczIterSet[0] << ", ";
       for (size_t i = 1; i < DMRG_time - 1; i++) {
         MaxLanczIterSet[i] = MaxLanczIterSet[i - 1] + MaxLanczIterSetSpace;
-        std::cout << MaxLanczIterSet[i] << ", ";
+        if (world.rank() == 0)
+          std::cout << MaxLanczIterSet[i] << ", ";
       }
-      std::cout << MaxLanczIterSet.back() << "]" << std::endl;
+      if (world.rank() == 0)
+        std::cout << MaxLanczIterSet.back() << "]" << std::endl;
     } else {
-      std::cout << "Setting MaxLanczIter as : [" << MaxLanczIterSet[0] << "]" << std::endl;
+      if (world.rank() == 0)
+        std::cout << "Setting MaxLanczIter as : [" << MaxLanczIterSet[0] << "]" << std::endl;
     }
   }
 
@@ -145,7 +154,8 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(-ts, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(ts, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
 
       site1++;
       site2++;
@@ -153,14 +163,16 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(-td, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(td, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(td, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     } else if (Ly > 2) {
       size_t site1 = i - 2 * Ly + 2, site2 = i;
       mpo_gen.AddTerm(-ts, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(-ts, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(ts, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(ts, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
 
       site1++;
       site2++;
@@ -168,7 +180,8 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(-td, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(td, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(td, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     }
   }
 
@@ -182,15 +195,18 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
 
       // left-upper-d_xy <====> right-lower-s
-      site1 = i+1; site2 = i+2+(2*Ly);
+      site1 = i + 1;
+      site2 = i + 2 + (2 * Ly);
       mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
 
     } else if (Ly > 2) {
       //winding term, incomplete
@@ -200,14 +216,17 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
       // left-upper-d_xy <====> right-lower-s
-      site1 += 1; site2 = site2 - 1;
+      site1 += 1;
+      site2 = site2 - 1;
       mpo_gen.AddTerm(-tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     }
 
     if (y > 0) {
@@ -217,15 +236,18 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
 
       // left-lower-d_xy <====> right-upper-s
-      site1 = i+1; site2 = site2-1;
+      site1 = i + 1;
+      site2 = site2 - 1;
       mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     } else if (Ly > 2) {
       //winding term
       // left-lower-s <====> right-upper-d_xy
@@ -234,15 +256,18 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
 
       // left-lower-d_xy <====> right-upper-s
-      site1 = i+1; site2 = site2-1;
+      site1 = i + 1;
+      site2 = site2 - 1;
       mpo_gen.AddTerm(tsd_xy, bupcF, site1, bupa, site2, f);
       mpo_gen.AddTerm(tsd_xy, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(-tsd_xy, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     }
   }
 
@@ -256,7 +281,8 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(-tsd_nn, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(tsd_nn, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(tsd_nn, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     }
     //vertical
     if (y < 2 * Ly - 2) {
@@ -265,7 +291,8 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(tsd_nn, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_nn, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(-tsd_nn, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     } else if (Ly > 2) {
       //winding term
       size_t site1 = i - (2 * Ly) + 3, site2 = i;
@@ -273,12 +300,14 @@ int main(int argc, char *argv[]) {
       mpo_gen.AddTerm(tsd_nn, bdnc, site1, Fbdna, site2, f);
       mpo_gen.AddTerm(-tsd_nn, bupaF, site1, bupc, site2, f);
       mpo_gen.AddTerm(-tsd_nn, bdna, site1, Fbdnc, site2, f);
-      cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
+      if (world.rank() == 0)
+        cout << "add site (" << site1 << "," << site2 << ")  hopping term" << endl;
     }
   }
 
-  auto mro = mpo_gen.GenMatReprMPO();
-  cout << "MRO generated." << endl;
+  auto mro = mpo_gen.GenMatReprMPO(false);
+  if (world.rank() == 0)
+    cout << "MRO generated." << endl;
 
   // dmrg
   double e0;
