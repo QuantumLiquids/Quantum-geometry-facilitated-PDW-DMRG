@@ -1,6 +1,5 @@
-% Define the initial values
-Ly = 3;
-Lx = 64;
+Ly = 4;
+Lx = 32;
 ts = 1;
 td = -1;
 tsd_xy = 1;
@@ -8,8 +7,8 @@ tsd_nn = 0;
 Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
-Hole = 24;
-D_values = [10000,12000];
+Hole = 8;
+D_values = [9000,10000,12000];
 
 for i = 1:length(D_values)
     D = D_values(i);
@@ -47,7 +46,7 @@ set(get(gca,'YLabel'),'FontSize',24);
 
 l=legend('Location', 'best');
 set(l,'Box','off');set(l,'Interpreter','latex');
-set(l,'Fontsize',24);
+set(l,'Fontsize',16);
 set(l,'Location','SouthWest');
 %Display the plot
 %grid on;

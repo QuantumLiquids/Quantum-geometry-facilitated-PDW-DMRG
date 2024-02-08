@@ -1,4 +1,3 @@
-
 Ly = 3;
 Lx = 24;
 ts = 1;
@@ -9,7 +8,7 @@ Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
 Hole = 8;
-D_values = [10000, 12000, 14000, 16000];
+D_values = [10000, 12000, 14000, 16000,20000,24000];
 
 legend_entries = cell(size(D_values));
 
@@ -17,7 +16,7 @@ for i = 1:numel(D_values)
     D = D_values(i);
 
     % Create the file path
-    file_path = ['../data/onsitepair', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
+    file_path = ['../../data/onsitepair', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
         'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
@@ -72,7 +71,7 @@ set(gca,'fontsize',24);
 set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
 xlabel('$\Delta x$','Interpreter','latex');
-ylabel('$\langle\Delta(0)^\dagger \Delta(x)\rangle \cdot (-1)^x$','Interpreter','latex')
+ylabel('$\langle\Delta(0)^\dagger \Delta(x)\rangle \cdot (-1)^{\Delta x}$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 

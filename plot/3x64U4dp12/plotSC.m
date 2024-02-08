@@ -1,14 +1,17 @@
-Ly = 4;
-Lx = 32;
+clear all;
+close all;
+
+Ly = 3;
+Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
-tsd_nn = 0;
+tsd_nn = 0.1;
 Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
-Hole = 8;
-D_values = [9000,10000,12000];
+Hole = 32;
+D_values = [10000];
 
 
 legend_entries = cell(size(D_values));
@@ -71,7 +74,7 @@ hold off;
 set(gca,'fontsize',24);
 set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
-xlabel('$\Delta x$','Interpreter','latex');
+xlabel('$ x$','Interpreter','latex');
 ylabel('$\langle\Delta(0)^\dagger \Delta(x)\rangle \cdot (-1)^x$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);

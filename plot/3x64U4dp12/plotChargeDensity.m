@@ -1,15 +1,15 @@
-% Define the initial values
+
 Ly = 3;
 Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
-tsd_nn = 0;
+tsd_nn = 0.1;
 Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
-Hole = 24;
-D_values = [10000,12000];
+Hole = 32;
+D_values = [10000];
 
 for i = 1:length(D_values)
     D = D_values(i);

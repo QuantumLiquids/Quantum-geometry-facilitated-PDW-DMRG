@@ -8,7 +8,7 @@ Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
 Hole = 8;
-D_values = [10000, 12000, 14000, 16000];
+D_values = [10000, 12000, 14000, 16000,20000,24000];
 
 
 bond_width = 2;
@@ -95,12 +95,12 @@ for i = 1:numel(D_values)
 
         for j = 1:numel(sc_d)
             site_idx = sc_d{j}{1}(2); % C++ convention
-            s_orbital_sc_correlation = sc_d{j}{2};
-            x = fix(site_idx /(2*Ly)) + 1;
-            y = mod(site_idx, 2 * Ly) /2 +1;
+            d_orbital_sc_correlation = sc_d{j}{2};
+            x = fix((site_idx -1) /(2*Ly)) + 1;
+            y = mod((site_idx -1), 2 * Ly) /2 +1;
             center = [x, y];
-            radius = abs(s_orbital_sc_correlation) * circle_scale;
-            if s_orbital_sc_correlation >= 0
+            radius = abs(d_orbital_sc_correlation) * circle_scale;
+            if d_orbital_sc_correlation >= 0
                 % Draw the disk using the rectangle function
                 rectangle('Position', [center(1)-radius, center(2)-radius, 2*radius, 2*radius],...
                     'Curvature', [1, 1], 'FaceColor', positive_sc_color, 'EdgeColor', 'none');
