@@ -12,7 +12,7 @@ Uss = 3.8
 Udd = 3.7
 Usd = 4.0
 Hole = 16
-D_values = [8000,10000]
+D_values = [8000,10000,15000]
 
 for D in D_values:
     # Create the file path using f-string formatting

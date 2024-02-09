@@ -2,8 +2,8 @@ import json
 import matplotlib.pyplot as plt
 
 # Define the initial values
-Ly = 4
-Lx = 32
+Ly = 3
+Lx = 64
 ts = 1
 td = -1
 tsd_xy = 1
@@ -11,8 +11,8 @@ tsd_nn = 0
 Uss = 3.8
 Udd = 3.7
 Usd = 4.0
-Hole = 8
-D_values = [9000,10000,12000]
+Hole = 24
+D_values = [10000]
 
 for D in D_values:
     # Create the file path using f-string formatting

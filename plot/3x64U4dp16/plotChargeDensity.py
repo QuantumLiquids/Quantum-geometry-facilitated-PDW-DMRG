@@ -11,14 +11,14 @@ tsd_nn = 0
 Uss = 3.8
 Udd = 3.7
 Usd = 4.0
-Hole = 8
+Hole = 24
 
 # Define the values of D to iterate over
 D_values = [10000]
 
 for D in D_values:
     # Create the file path using f-string formatting
-    file_path = f"../data/nf{Ly}x{Lx}ts{ts}td{td}tsd_xy{tsd_xy}tsd_nn{tsd_nn}Uss{Uss}Udd{Udd}Usd{Usd}Hole{Hole}D{D}.json"
+    file_path = f"../../data/nf{Ly}x{Lx}ts{ts}td{td}tsd_xy{tsd_xy}tsd_nn{tsd_nn}Uss{Uss}Udd{Udd}Usd{Usd}Hole{Hole}D{D}.json"
 
     # Load the data from the JSON file
     with open(file_path, 'r') as file:
