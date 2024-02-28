@@ -8,7 +8,7 @@ Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
 Hole = 8;
-D_values = [9000,10000,12000];
+D_values = [9000,10000,12000,16000];
 
 
 legend_entries = cell(size(D_values));
