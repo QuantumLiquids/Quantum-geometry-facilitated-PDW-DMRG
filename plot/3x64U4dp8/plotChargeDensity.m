@@ -1,5 +1,5 @@
-Ly = 4;
-Lx = 32;
+Ly = 3;
+Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
@@ -7,8 +7,8 @@ tsd_nn = 0;
 Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
-Hole = 8;
-D_values = [12000,16000,20000];
+Hole = 48;
+D_values = [15000];
 
 for i = 1:length(D_values)
     D = D_values(i);
@@ -46,7 +46,7 @@ set(get(gca,'YLabel'),'FontSize',24);
 
 l=legend('Location', 'best');
 set(l,'Box','off');set(l,'Interpreter','latex');
-set(l,'Fontsize',16);
+set(l,'Fontsize',24);
 set(l,'Location','SouthWest');
 %Display the plot
 %grid on;

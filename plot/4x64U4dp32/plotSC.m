@@ -1,5 +1,5 @@
 Ly = 4;
-Lx = 32;
+Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
@@ -7,8 +7,8 @@ tsd_nn = 0;
 Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
-Hole = 8;
-D_values = [9000,10000,12000,16000,20000];
+Hole = 16;
+D_values = [14000,16000];
 
 
 legend_entries = cell(size(D_values));
