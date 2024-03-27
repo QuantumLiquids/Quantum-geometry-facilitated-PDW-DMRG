@@ -10,8 +10,8 @@ Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
 Hole = 24;
-D_values = [10000,12000,14000,16000,20000];
-trunc_errs = [2.51e-07, 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08]';
+D_values = [12000,14000,16000,20000,24000];
+trunc_errs = [ 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08,4.64e-08]';
 sc_corr_finite_D = [];
 fit_length = 25;
 legend_entries = cell(size(D_values));
@@ -47,12 +47,16 @@ for i = 1:numel(D_values)
 
     % Plot the data on a logarithmic scale
     y_values = ((-1) .^ x_values) .* y_values;
-    loglog(x_values, y_values, 'x', 'MarkerSize', 4);
+    loglog(x_values, y_values, 'x', 'MarkerSize', 6);
     hold on;
     
     sc_corr_finite_D = [sc_corr_finite_D; y_values];
     % Generate the legend entry for the current D value
-    legend_entries{i} = ['$D = ', num2str(D),'$'];
+    if i == 1
+        legend_entries{i} = ['$D = ', num2str(D),'$'];
+    else
+        legend_entries{i} = ['$', num2str(D),'$'];
+    end
 end
 
 
@@ -63,7 +67,7 @@ for col = 1:size(sc_corr_finite_D, 2)
     p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
     sc_extraplt(col) = polyval(p, 0);
 end
-loglog(x_values, sc_extraplt, '-o'); hold on;
+loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
 
 % Fit a power-law function to SC correlation
 
@@ -85,8 +89,9 @@ hold off;
 set(gca,'fontsize',24);
 set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
-xlabel('$ x$','Interpreter','latex');
-ylabel('$\langle\Delta(0)^\dagger \Delta(x)\rangle \cdot (-1)^x$','Interpreter','latex')
+xlabel('$r$','Interpreter','latex');
+%Phi(x) = \langle\Delta(0)^\dagger \Delta(x)\rangle
+ylabel('$\Phi(r) \cdot (-1)^r$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 
@@ -96,5 +101,8 @@ set(l,'Box','off');set(l,'Interpreter','latex');
 set(l,'Fontsize',24);
 set(l,'Location','SouthWest');
 
+ylim([1e-3, 1e-1]);
+xlim([2 32])
+xticks([2,4,8,16,32]);
 % Display the plot
-grid on;
+% grid on;

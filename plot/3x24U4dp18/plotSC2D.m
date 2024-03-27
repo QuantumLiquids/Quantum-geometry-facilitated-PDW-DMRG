@@ -9,13 +9,14 @@ Udd = 3.7;
 Usd = 4.0;
 Hole = 8;
 D_values = [10000, 12000, 14000, 16000,20000,24000];
-
+trunc_errs = [ 1.59e-07,1.12e-07, 8.17e-08,4.87e-08,3.21e-08]';
 
 bond_width = 2;
 bond_color = 'k';
-positive_sc_color = [233, 196, 107]/256;
-negative_sc_color = [042, 157, 142]/256;
-circle_scale = 10;
+positive_sc_color = [0     172	156]/256;
+negative_sc_color = [237   159	84 ]/256;
+reference_point_color = [152  115	232]/256;
+circle_scale = 2;
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -46,17 +47,20 @@ for i = 1:numel(D_values)
                 end
             end
         end
-
+        % ===== s orbital ===== %
         figure;
-        for x = 1:Lx
-            for y= 1:Ly
-                line([x,x],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;
-                if x < Lx
-                    line([x,x+1],[y,y],'color',bond_color,'linewidth',bond_width);  hold on;
+        for x = Lx/4+1:Lx*3/4+1
+            for y= 1:Ly-1
+                line([x,x],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;  
+                if x == Lx*3/4+1
+                    line([x+1,x+1],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;
                 end
-
+            end
+            for y = 1:Ly
+                line([x,x+1],[y,y],'color',bond_color,'linewidth',bond_width);  hold on;
             end
         end
+
 
         for j = 1:numel(sc_s)
             site_idx = sc_s{j}{1}(2); % C++ convention
@@ -64,7 +68,7 @@ for i = 1:numel(D_values)
             x = fix(site_idx /(2*Ly)) + 1;
             y = mod(site_idx, 2 * Ly) /2 +1;
             center = [x, y];
-            radius = abs(s_orbital_sc_correlation) * circle_scale;
+            radius = sqrt(abs(s_orbital_sc_correlation)) * circle_scale;
             if s_orbital_sc_correlation >= 0
                 % Draw the disk using the rectangle function
                 rectangle('Position', [center(1)-radius, center(2)-radius, 2*radius, 2*radius],...
@@ -77,19 +81,24 @@ for i = 1:numel(D_values)
         ref_site_idx = sc_s{1}{1}(1); % C++ convention
         x = fix(ref_site_idx /(2*Ly)) + 1;
         y = mod(ref_site_idx, 2 * Ly) /2 +1;
-        plot(x, y, 'x', 'MarkerSize',10);
+        radius = sqrt(abs(d_orbital_sc_correlation)) * 1.5 * circle_scale;
+        rectangle('Position', [x - side_length/2, y - side_length/2, side_length, side_length],...
+          'Curvature', 0, 'FaceColor', 'none', 'EdgeColor', reference_point_color, 'LineWidth', 3);
+
         axis off;
         axis equal;
 
         %====== d orbital ======%
         figure;
-        for x = 1:Lx
-            for y= 1:Ly
-                line([x,x],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;
-                if x < Lx
-                    line([x,x+1],[y,y],'color',bond_color,'linewidth',bond_width);  hold on;
+        for x = Lx/4+1:Lx*3/4+1
+            for y= 1:Ly-1
+                line([x,x],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;  
+                if x == Lx*3/4+1
+                    line([x+1,x+1],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;
                 end
-
+            end
+            for y = 1:Ly
+                line([x,x+1],[y,y],'color',bond_color,'linewidth',bond_width);  hold on;
             end
         end
 
@@ -99,7 +108,7 @@ for i = 1:numel(D_values)
             x = fix((site_idx -1) /(2*Ly)) + 1;
             y = mod((site_idx -1), 2 * Ly) /2 +1;
             center = [x, y];
-            radius = abs(d_orbital_sc_correlation) * circle_scale;
+            radius = sqrt(abs(d_orbital_sc_correlation)) * circle_scale;
             if d_orbital_sc_correlation >= 0
                 % Draw the disk using the rectangle function
                 rectangle('Position', [center(1)-radius, center(2)-radius, 2*radius, 2*radius],...
@@ -112,11 +121,14 @@ for i = 1:numel(D_values)
         ref_site_idx = sc_d{1}{1}(1); % C++ convention
         x = fix(ref_site_idx /(2*Ly)) + 1;
         y = mod(ref_site_idx, 2 * Ly) /2 +1;
-        plot(x, y, 'x', 'MarkerSize',10);
+        radius = sqrt(abs(d_orbital_sc_correlation)) * 1.5 * circle_scale;
+        side_length = 2 * radius;
+        rectangle('Position', [x - side_length/2, y - side_length/2, side_length, side_length],...
+          'Curvature', 0, 'FaceColor', 'none', 'EdgeColor', reference_point_color, 'LineWidth', 3);
+
         axis off;
         axis equal;
     end
-
 end
 
 

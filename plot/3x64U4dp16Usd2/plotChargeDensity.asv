@@ -1,3 +1,4 @@
+% Define the initial values
 Ly = 3;
 Lx = 64;
 ts = 1;
@@ -7,13 +8,15 @@ tsd_nn = 0;
 Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
-Hole = 48;
-D_values = [12000];
-
+Hole = 24;
+D_values = [10000,12000,14000,16000,20000];
+trunc_errs = [2.51e-07, 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08];
+ns_finite_data = [];
+nd_all_data = [];
 for i = 1:length(D_values)
     D = D_values(i);
     % Create the file path
-    file_path = ['../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
+    file_path = ['../../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
         'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
@@ -24,14 +27,18 @@ for i = 1:length(D_values)
     d_data = data(mod(data(:, 1), 2*Ly) == 1, :);
     
     % Extract the x and y values
-    x_values = s_data(:, 1) / (2*Ly);
+    x_coor = s_data(:, 1) / (2*Ly);
     n_s = s_data(:, 2);
+    n_s = (n_s + flip(n_s))/2;
+    ns_all_data = [ns_all_data; n_s'];
     n_d = d_data(:, 2);
+    n_d = (n_d + flip(n_d))/2;
     
-    plot(x_values, n_s, '-o', 'DisplayName', ['$n_s, D = ', num2str(D),'$']);
-    hold on;
-    plot(x_values, n_d, '-x', 'DisplayName', ['$n_d, D = ', num2str(D),'$']);
+    plot(x_coor, n_s, 'o', 'DisplayName', ['$n_s, D = ', num2str(D),'$']); hold on;
+    plot(x_coor, n_d, 'x', 'DisplayName', ['$n_d, D = ', num2str(D),'$']);
 end
+
+
 
 hold off;
 

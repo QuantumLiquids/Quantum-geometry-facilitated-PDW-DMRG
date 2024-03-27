@@ -83,8 +83,8 @@ for col = 1:size(nnd_corr_finite_D, 2)
     p = polyfit(trunc_errs, nnd_corr_finite_D(:, col), 2);
     nnd_extraplt(col) = polyval(p, 0);
 end
-h1 = loglog(x_values, abs(nns_extraplt), 'o','MarkerSize', 8); hold on;
-h2 = loglog(x_values, abs(nnd_extraplt), 'x','MarkerSize', 8); hold on;
+loglog(x_values, abs(nns_extraplt), '-o'); hold on;
+loglog(x_values, abs(nnd_extraplt), '-o'); hold on;
 
 % Fit a power-law function to the last group of x_values and y_values
 for band = [0,1]
@@ -103,9 +103,7 @@ for band = [0,1]
     % Plot the fitted line
     x_guide = linspace(min(x_values), max(x_values), 100);
     y_guide = exp(polyval(fit, log(x_guide)));
-    if(band == 0)
-        loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
-    end
+    loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
 end
 
 hold off;
@@ -114,17 +112,13 @@ hold off;
 set(gca,'fontsize',24);
 set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
-xlabel('$r$','Interpreter','latex');
-% D(r) = \langle n(0) n(x)\rangle - \langle n(0)\rangle \langle n(x) \rangle
-ylabel('$|D(r)|$','Interpreter','latex')
+xlabel('$\Delta x$','Interpreter','latex');
+ylabel('$|\langle n(0) n(x)\rangle - \langle n(0)\rangle \langle n(x) \rangle|$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 
-l=legend([h1,h2],{'$s$-orbital', '$d$-orbital'}, 'Location', 'best');
-set(l,'Box','off');set(l,'Interpreter','latex');
-set(l,'Fontsize',24);
-set(l,'Location','SouthWest');
-
-xlim([2 32])
-xticks([2,4,8,16,32]);
-
+% Display the legend
+% l=legend(legend_entries, 'Location', 'best');
+% set(l,'Box','off');set(l,'Interpreter','latex');
+% set(l,'Fontsize',24);
+% set(l,'Location','SouthWest');

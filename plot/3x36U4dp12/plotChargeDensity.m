@@ -1,5 +1,5 @@
 Ly = 3;
-Lx = 64;
+Lx = 36;
 ts = 1;
 td = -1;
 tsd_xy = 1;
@@ -7,13 +7,13 @@ tsd_nn = 0;
 Uss = 3.8;
 Udd = 3.7;
 Usd = 4.0;
-Hole = 48;
-D_values = [12000];
+Hole = 18;
+D_values = [10000];
 
 for i = 1:length(D_values)
     D = D_values(i);
     % Create the file path
-    file_path = ['../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
+    file_path = ['../../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
         'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
