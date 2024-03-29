@@ -89,8 +89,8 @@ elseif (UNIX)
 endif ()
 
 
-find_path(TENSOR_HEADER_PATH "gqten")
-find_path(MPS2_HEADER_PATH "gqmps2")
+find_path(TENSOR_HEADER_PATH "qlten")
+find_path(MPS2_HEADER_PATH "qlmps")
 find_package(hptt)
 find_package(Boost
         1.76.0

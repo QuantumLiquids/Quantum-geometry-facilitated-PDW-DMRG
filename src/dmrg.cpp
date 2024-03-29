@@ -2,18 +2,18 @@
  * DMRG for Huang PDW model
  *
  */
-#include "gqmps2/gqmps2.h"
+#include "qlmps/qlmps.h"
 #include "./gqdouble.h"
 #include "./operators.h"
 #include "./myutil.h"
 #include "./params_case.h"
 
-using FiniteMPST = gqmps2::FiniteMPS<TenElemT, U1U1QN>;
+using FiniteMPST = qlmps::FiniteMPS<TenElemT, U1U1QN>;
 
 int main(int argc, char *argv[]) {
   using namespace std;
-  using namespace gqmps2;
-  using namespace gqten;
+  using namespace qlmps;
+  using namespace qlten;
   namespace mpi = boost::mpi;
   mpi::environment env;
   mpi::communicator world;
@@ -34,11 +34,9 @@ int main(int argc, char *argv[]) {
   CaseParams params(argv[1]);
 
   if (world.rank() == 0 && world.size() > 1 && params.TotalThreads > 2) {
-    gqten::hp_numeric::SetTensorTransposeNumThreads(params.TotalThreads - 2);
-    gqten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads - 2);
+    qlten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads - 2);
   } else {
-    gqten::hp_numeric::SetTensorTransposeNumThreads(params.TotalThreads);
-    gqten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads);
+    qlten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads);
   }
 
   /******** Model parameter ********/
@@ -53,10 +51,10 @@ int main(int argc, char *argv[]) {
          << endl;
   }
   /****** DMRG parameter *******/
-  gqmps2::FiniteVMPSSweepParams sweep_params(
+  qlmps::FiniteVMPSSweepParams sweep_params(
       params.Sweeps,
       params.Dmin, params.Dmax, params.CutOff,
-      gqmps2::LanczosParams(params.LanczErr, params.MaxLanczIter),
+      qlmps::LanczosParams(params.LanczErr, params.MaxLanczIter),
       params.noise
   );
 
@@ -114,14 +112,14 @@ int main(int argc, char *argv[]) {
           half_filled_qn_label = 3 - half_filled_qn_label;
         }
       }
-      gqmps2::DirectStateInitMps(mps, stat_labs);
+      qlmps::DirectStateInitMps(mps, stat_labs);
       mps.Dump(sweep_params.mps_path, true);
     }
   }
 
 
   /*******  Creation MPO/MRO *******/
-  gqmps2::MPOGenerator<TenElemT, U1U1QN> mpo_gen(sites, qn0);
+  qlmps::MPOGenerator<TenElemT, U1U1QN> mpo_gen(sites, qn0);
   for (size_t i = 0; i < N; i = i + 2) {
     mpo_gen.AddTerm(-Uss, Uterm, i);
     mpo_gen.AddTerm(-Udd, Uterm, i + 1);
@@ -312,20 +310,20 @@ int main(int argc, char *argv[]) {
   // dmrg
   double e0;
   if (!has_bond_dimension_parameter) {
-    e0 = gqmps2::FiniteDMRG(mps, mro, sweep_params, world);
+    e0 = qlmps::FiniteDMRG(mps, mro, sweep_params, world);
   } else {
     for (size_t i = 0; i < DMRG_time; i++) {
       size_t D = input_D_set[i];
       if (world.rank() == 0) {
         std::cout << "D_max = " << D << std::endl;
       }
-      gqmps2::FiniteVMPSSweepParams sweep_params(
+      qlmps::FiniteVMPSSweepParams sweep_params(
           params.Sweeps,
           D, D, params.CutOff,
-          gqmps2::LanczosParams(params.LanczErr, MaxLanczIterSet[i]),
+          qlmps::LanczosParams(params.LanczErr, MaxLanczIterSet[i]),
           params.noise
       );
-      e0 = gqmps2::FiniteDMRG(mps, mro, sweep_params, world);
+      e0 = qlmps::FiniteDMRG(mps, mro, sweep_params, world);
     }
 
   }

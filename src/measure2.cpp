@@ -14,15 +14,15 @@
     Which are set as start=Lx/4, end = 3*Lx/4+2 by default
 */
 
-#include "gqmps2/gqmps2.h"
-#include "gqten/gqten.h"
+#include "qlmps/qlmps.h"
+#include "qlten/qlten.h"
 #include <ctime>
 #include "gqdouble.h"
 #include "operators.h"
 #include "params_case.h"
 #include "myutil.h"
 #include "my_measure.h"
-#include "gqten/utility/timer.h"
+#include "qlten/utility/timer.h"
 
 #include "boost/mpi.hpp"
 
@@ -30,12 +30,12 @@ using std::cout;
 using std::endl;
 using std::vector;
 using QNT = U1U1QN;
-using FiniteMPST = gqmps2::FiniteMPS<TenElemT, QNT>;
-using gqmps2::SiteVec;
-using gqmps2::MeasureTwoSiteOp;
-using gqten::Timer;
-using gqmps2::MeasureGroupTask;
-using gqmps2::kMpsPath;
+using FiniteMPST = qlmps::FiniteMPS<TenElemT, QNT>;
+using qlmps::SiteVec;
+using qlmps::MeasureTwoSiteOp;
+using qlten::Timer;
+using qlmps::MeasureGroupTask;
+using qlmps::kMpsPath;
 
 int main(int argc, char *argv[]) {
   namespace mpi = boost::mpi;
@@ -75,8 +75,7 @@ int main(int argc, char *argv[]) {
 
   const SiteVec<TenElemT, QNT> sites = SiteVec<TenElemT, QNT>(N, pb_out);
   FiniteMPST mps(sites);
-  gqten::hp_numeric::SetTensorTransposeNumThreads(params.TotalThreads);
-  gqten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads);
+  qlten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads);
 
   Timer two_site_timer("measure two site operators");
 

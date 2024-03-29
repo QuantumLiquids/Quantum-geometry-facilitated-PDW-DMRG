@@ -11,7 +11,7 @@
 ///<  TODO: optimize the CPU cost.
 
 
-#include "gqten/gqten.h"
+#include "qlten/qlten.h"
 #include <ctime>
 #include "gqdouble.h"
 #include "operators.h"
@@ -20,11 +20,11 @@
 #include "my_measure.h"
 
 
-using namespace gqmps2;
-using namespace gqten;
+using namespace qlmps;
+using namespace qlten;
 using namespace std;
 
-using FiniteMPST = gqmps2::FiniteMPS<TenElemT, U1U1QN>;
+using FiniteMPST = qlmps::FiniteMPS<TenElemT, U1U1QN>;
 
 int main(int argc, char *argv[]) {
 //  namespace mpi = boost::mpi;
@@ -38,8 +38,7 @@ int main(int argc, char *argv[]) {
   clock_t startTime, endTime;
   startTime = clock();
 
-  gqten::hp_numeric::SetTensorTransposeNumThreads(params.TotalThreads);
-  gqten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads);
+  qlten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads);
 
   OperatorInitial();
 
