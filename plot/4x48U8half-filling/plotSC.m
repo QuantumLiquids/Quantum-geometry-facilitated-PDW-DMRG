@@ -7,10 +7,10 @@ tsd_nn = 0;
 Uss = 8;
 Udd = 8;
 Usd = 8;
-Hole = Lx * Ly * 2 / 32;
-D_values = [7000,9000,12000];
+Hole = 0;
+D_values = [5000];
 
-trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08]';
+% trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08]';
 sc_corr_finite_D = [];
 fit_length = 20;
 legend_entries = cell(size(D_values));
@@ -59,30 +59,30 @@ for i = 1:numel(D_values)
 end
 
 
-% Extrapolation
-sc_extraplt = zeros(1, size(sc_corr_finite_D, 2));
-
-for col = 1:size(sc_corr_finite_D, 2)
-    p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
-    sc_extraplt(col) = polyval(p, 0);
-end
-loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
-
-% Fit a power-law function to SC correlation
-
-log_x = log(x_values(x_values<fit_length));
-log_y = log(sc_extraplt(x_values<fit_length));
-fit = polyfit(log_x, log_y, 1);
-K = -fit(1);
-fprintf('Exponent K: %.4f\n', K);
-
-% Plot the fitted line
-x_guide = linspace(min(x_values), max(x_values), 100);
-y_guide = exp(polyval(fit, log(x_guide)));
-loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
-
-
-hold off;
+% % Extrapolation
+% sc_extraplt = zeros(1, size(sc_corr_finite_D, 2));
+% 
+% for col = 1:size(sc_corr_finite_D, 2)
+%     p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
+%     sc_extraplt(col) = polyval(p, 0);
+% end
+% loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
+% 
+% % Fit a power-law function to SC correlation
+% 
+% log_x = log(x_values(x_values<fit_length));
+% log_y = log(sc_extraplt(x_values<fit_length));
+% fit = polyfit(log_x, log_y, 1);
+% K = -fit(1);
+% fprintf('Exponent K: %.4f\n', K);
+% 
+% % Plot the fitted line
+% x_guide = linspace(min(x_values), max(x_values), 100);
+% y_guide = exp(polyval(fit, log(x_guide)));
+% loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
+% 
+% 
+% hold off;
 
 % Set the labels and title
 set(gca,'fontsize',24);
@@ -95,10 +95,10 @@ set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 
 % Display the legend
-l=legend(legend_entries, 'Location', 'best');
-set(l,'Box','off');set(l,'Interpreter','latex');
-set(l,'Fontsize',24);
-set(l,'Location','SouthWest');
+% l=legend(legend_entries, 'Location', 'best');
+% set(l,'Box','off');set(l,'Interpreter','latex');
+% set(l,'Fontsize',24);
+% set(l,'Location','SouthWest');
 
 % ylim([1e-3, 1e-1]);
 xlim([2 24])
