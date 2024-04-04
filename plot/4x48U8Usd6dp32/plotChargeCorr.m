@@ -1,5 +1,5 @@
 Ly = 4;
-Lx = 48;
+Lx = 32;
 ts = 1;
 td = -1;
 tsd_xy = 1;
@@ -7,8 +7,8 @@ tsd_nn = 0;
 Uss = 8;
 Udd = 8;
 Usd = 8;
-Hole = 0;
-D_values = [5000,7000];
+Hole = 8;
+D_values = [5000];
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -55,25 +55,25 @@ for i = 1:numel(D_values)
         end
 
         % Plot the data on a logarithmic scale
-        semilogy(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
-        hold on;
+        loglog(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
+        hold on;5
 
         % Generate the legend entry for the current D value
         legend_entries{2 * i - 1 + band} = [band_name{band+1}, ', $D = ', num2str(D),'$' ];
 
         % Fit a power-law function to the last group of x_values and y_values
-        % if i == numel(D_values)
-        %     log_x = log(x_values(x_values<10));
-        %     log_y = log(y_values(x_values<10));
-        %     fit = polyfit(log_x, log_y, 1);
-        %     K = -fit(1);
-        %     fprintf('Exponent Ksc: %.4f\n', K);
-        % 
-        %     % Plot the fitted line
-        %     x_guide = linspace(min(x_values), max(x_values), 100);
-        %     y_guide = exp(polyval(fit, log(x_guide)));
-        %     semilogy(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
-        % end
+        if i == numel(D_values)
+            log_x = log(x_values(x_values<10));
+            log_y = log(y_values(x_values<10));
+            fit = polyfit(log_x, log_y, 1);
+            K = -fit(1);
+            fprintf('Exponent Ksc: %.4f\n', K);
+
+            % Plot the fitted line
+            x_guide = linspace(min(x_values), max(x_values), 100);
+            y_guide = exp(polyval(fit, log(x_guide)));
+            loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
+        end
     end
 end
 
