@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 6;
 Hole = Lx * Ly * 2/32;
-D_values = [5000];
+D_values = [5001,7000];
 
 
 legend_entries = cell(size(D_values));
@@ -43,7 +43,7 @@ for i = 1:numel(D_values)
     end
 
     % Plot the data on a logarithmic scale
-    % y_values = -((-1) .^ x_values) .* y_values;
+    y_values = ((-1) .^ x_values) .* y_values;
     loglog(x_values, y_values, 'o', 'MarkerSize', 6);
     hold on;
 
