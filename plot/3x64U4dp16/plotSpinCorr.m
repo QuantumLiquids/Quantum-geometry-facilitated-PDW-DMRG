@@ -96,7 +96,8 @@ coefficients = X \ log_spin_extraplt'; % Coefficients of the linear model
 % Extract fitted parameters
 intercept = coefficients(1);
 slope = coefficients(2);
-
+xi = -1/slope;
+fprintf('correlation length xi: %.4f\n', xi);
 % Generate fitted curve
 fitted_curve = X * coefficients;
 

@@ -56,7 +56,7 @@ for i = 1:numel(D_values)
 
         % Plot the data on a logarithmic scale
         loglog(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
-        hold on;5
+        hold on;
 
         % Generate the legend entry for the current D value
         legend_entries{2 * i - 1 + band} = [band_name{band+1}, ', $D = ', num2str(D),'$' ];
