@@ -6,9 +6,9 @@ tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 8;
-Hole = 0;
-D_values = [5000,7000,10000];
+Usd = 2;
+Hole = Lx * Ly * 2/32;
+D_values = [5000];
 
 for i = 1:length(D_values)
     D = D_values(i);
@@ -48,6 +48,5 @@ l=legend('Location', 'best');
 set(l,'Box','off');set(l,'Interpreter','latex');
 set(l,'Fontsize',16);
 set(l,'Location','SouthWest');
-% ylim([0.95,1.05]);
 %Display the plot
 %grid on;

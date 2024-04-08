@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 8;
 Hole = 0;
-D_values = [5000,7000];
+D_values = [5000,7000,10000];
 
 % trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08]';
 sc_corr_finite_D = [];
