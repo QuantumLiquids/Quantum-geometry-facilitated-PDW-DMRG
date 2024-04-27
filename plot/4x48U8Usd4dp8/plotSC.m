@@ -6,9 +6,9 @@ tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 6;
-Hole = Lx * Ly * 2/32;
-D_values = [5001,7000,10000,13000];
+Usd = 4;
+Hole = Lx * Ly * 2/8;
+D_values = [5000];
 
 
 legend_entries = cell(size(D_values));
