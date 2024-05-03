@@ -1,14 +1,14 @@
 Ly = 4;
-Lx = 32;
+Lx = 48;
 ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 8;
-Hole = 8;
-D_values = [5000];
+Usd = 6;
+Hole = Lx * Ly * 2/32;
+D_values = [5001,7000,10000,13000,15000,18000];
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -56,7 +56,7 @@ for i = 1:numel(D_values)
 
         % Plot the data on a logarithmic scale
         loglog(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
-        hold on;5
+        hold on;
 
         % Generate the legend entry for the current D value
         legend_entries{2 * i - 1 + band} = [band_name{band+1}, ', $D = ', num2str(D),'$' ];

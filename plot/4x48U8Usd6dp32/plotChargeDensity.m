@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 6;
 Hole = Lx * Ly * 2/32;
-D_values = [5001,7000,10000,13000];
+D_values = [5001,7000,10000,13000,15000,18000];
 
 for i = 1:length(D_values)
     D = D_values(i);

@@ -6,9 +6,9 @@ tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 4;
-Hole = Lx * Ly * 2/32;
-D_values = [5000,7000,10000,13000];
+Usd = 0;
+Hole = Lx * Ly * 2/8;
+D_values = [7000,9000,12000];
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -55,7 +55,7 @@ for i = 1:numel(D_values)
         end
 
         % Plot the data on a logarithmic scale
-        loglog(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
+        semilogy(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
         hold on;
 
         % Generate the legend entry for the current D value
@@ -72,7 +72,7 @@ for i = 1:numel(D_values)
             % Plot the fitted line
             x_guide = linspace(min(x_values), max(x_values), 100);
             y_guide = exp(polyval(fit, log(x_guide)));
-            loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
+            semilogy(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
         end
     end
 end
