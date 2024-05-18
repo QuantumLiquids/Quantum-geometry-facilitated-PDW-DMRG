@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 //  mpi::environment env;
 //  mpi::communicator world;
 
-  CaseParams params(argv[1]);
+  CaseParams params(argv[1], 1);
   size_t Lx = params.Lx;
   size_t N = 2 * Lx * params.Ly;
 

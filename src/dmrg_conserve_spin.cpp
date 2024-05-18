@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
           << std::endl;
   }
 
-  CaseParams params(argv[1]);
+  CaseParams params(argv[1], 1);
 
   if (world.rank() == 0 && world.size() > 1 && params.TotalThreads > 2) {
     qlten::hp_numeric::SetTensorManipulationThreads(params.TotalThreads - 2);
