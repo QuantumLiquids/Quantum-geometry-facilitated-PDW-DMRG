@@ -7,10 +7,10 @@ tsd_nn = 0;
 Uss = 8;
 Udd = 8;
 Usd = 8;
-Hole = Lx * Ly * 2 / 32;
-D_values = [7000,9000,12000,15000,20000];
+Hole = 0;
+D_values = [5000,7000,10000];
 
-trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08, 9.5e-09,6.15e-09]';
+% trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08]';
 sc_corr_finite_D = [];
 fit_length = 20;
 legend_entries = cell(size(D_values));
@@ -45,8 +45,7 @@ for i = 1:numel(D_values)
     end
 
     % Plot the data on a logarithmic scale
-    y_values = ((-1) .^ x_values) .* y_values;
-    loglog(x_values, y_values, 'x', 'MarkerSize', 6);
+    semilogy(x_values, y_values, 'x', 'MarkerSize', 6);
     hold on;
     
     sc_corr_finite_D = [sc_corr_finite_D; y_values];
@@ -58,30 +57,25 @@ for i = 1:numel(D_values)
     end
 end
 
+sc_extraplt = sc_corr_finite_D(end,:);
 
-% Extrapolation
-sc_extraplt = zeros(1, size(sc_corr_finite_D, 2));
+% Fit a exponential function to SC correlation
+log_sc_extraplt = log(sc_extraplt);
 
-for col = 1:size(sc_corr_finite_D, 2)
-    p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
-    sc_extraplt(col) = polyval(p, 0);
-end
-loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
+% Perform linear regression
+X = [ones(length(x_values), 1), x_values']; % Design matrix
+coefficients = X \ log_sc_extraplt'; % Coefficients of the linear model
 
-% Fit a power-law function to SC correlation
+% Extract fitted parameters
+intercept = coefficients(1);
+slope = coefficients(2);
+xi = -1/slope;
+fprintf('Fitted parameters:\n');
+fprintf('correlation length xi : %f\n', xi);
+% Generate fitted curve
+fitted_curve = X * coefficients;
 
-log_x = log(x_values(x_values<fit_length));
-log_y = log(sc_extraplt(x_values<fit_length));
-fit = polyfit(log_x, log_y, 1);
-K = -fit(1);
-fprintf('Exponent K: %.4f\n', K);
-
-% Plot the fitted line
-x_guide = linspace(min(x_values), max(x_values), 100);
-y_guide = exp(polyval(fit, log(x_guide)));
-loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
-
-
+plot(x_values, exp(fitted_curve), '-.');
 hold off;
 
 % Set the labels and title
@@ -90,18 +84,18 @@ set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
 xlabel('$r$','Interpreter','latex');
 %Phi(x) = \langle\Delta(0)^\dagger \Delta(x)\rangle
-ylabel('$\Phi(r) \cdot (-1)^r$','Interpreter','latex')
+ylabel('$\Phi(r)$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 
 % Display the legend
-l=legend(legend_entries, 'Location', 'best');
-set(l,'Box','off');set(l,'Interpreter','latex');
-set(l,'Fontsize',24);
-set(l,'Location','SouthWest');
+% l=legend(legend_entries, 'Location', 'best');
+% set(l,'Box','off');set(l,'Interpreter','latex');
+% set(l,'Fontsize',24);
+% set(l,'Location','SouthWest');
 
 % ylim([1e-3, 1e-1]);
-xlim([2 24])
-xticks([2,4,8,16,24]);
+xlim([0 25])
+% xticks([2,4,8,16,24]);
 % Display the plot
 % grid on;

@@ -1,18 +1,19 @@
-Ly = 4;
-Lx = 48;
+clear all;
+figure;
+Ly = 3;
+Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
-Uss = 8;
-Udd = 8;
-Usd = 8;
-Hole = Lx * Ly * 2 / 32;
-D_values = [7000,9000,12000,15000,20000];
-
-trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08, 9.5e-09,6.15e-09]';
+Uss = 3.8;
+Udd = 3.7;
+Usd = 4.0;
+Hole = 24;
+D_values = [12000,14000,16000,20000,24000];
+trunc_errs = [ 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08,4.64e-08]';
 sc_corr_finite_D = [];
-fit_length = 20;
+fit_length = 25;
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -21,7 +22,7 @@ for i = 1:numel(D_values)
     % Create the file path
     file_path = ['../../data/onsitepair', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     data = jsondecode(fileread(file_path));
@@ -100,8 +101,8 @@ set(l,'Box','off');set(l,'Interpreter','latex');
 set(l,'Fontsize',24);
 set(l,'Location','SouthWest');
 
-% ylim([1e-3, 1e-1]);
-xlim([2 24])
-xticks([2,4,8,16,24]);
+ylim([1e-3, 1e-1]);
+xlim([2 32])
+xticks([2,4,8,16,32]);
 % Display the plot
 % grid on;

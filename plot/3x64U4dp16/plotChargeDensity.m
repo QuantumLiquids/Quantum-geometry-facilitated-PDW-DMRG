@@ -74,6 +74,7 @@ params_fit = lsqcurvefit(model, initial_guess, fit_x, fit_ys');
 A_cdw = params_fit(1);
 phi = params_fit(2);
 Kc = params_fit(3);
+Q = params_fit(5);
 x = fit_x(1):0.01:fit_x(end);
 fitted_curve = model(params_fit, x);
 
@@ -81,18 +82,20 @@ plot(x, fitted_curve, '-.'); hold on;
 % Display fitted parameters
 fprintf('Fitted parameters:\n');
 fprintf('Kc (s-orbital): %f\n', Kc);
+fprintf('Q (s-orbital): %f\n', Q);
 
 % d-orbital
 params_fit = lsqcurvefit(model, initial_guess, fit_x, fit_yd');
 A_cdw = params_fit(1);
 phi = params_fit(2);
 Kc = params_fit(3);
+Q = params_fit(5);
 fitted_curve = model(params_fit, x);
 plot(x, fitted_curve, '-.'); hold on;
 % Display fitted parameters
 fprintf('Fitted parameters:\n');
 fprintf('Kc (d-orbital): %f\n', Kc);
-
+fprintf('Q (d-orbital): %f\n', Q);
 hold off;
 
 set(gca,'fontsize',28);

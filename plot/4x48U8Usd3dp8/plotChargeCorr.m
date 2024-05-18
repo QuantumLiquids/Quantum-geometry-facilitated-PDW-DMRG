@@ -4,11 +4,11 @@ ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
-Uss = 3.8;
-Udd = 3.7;
-Usd = 4.0;
+Uss = 8;
+Udd = 8;
+Usd = 8;
 Hole = 8;
-D_values = [12000,16000,20000];
+D_values = [5000];
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -17,14 +17,14 @@ for i = 1:numel(D_values)
     % Create the file path
     file_path = ['../../data/nfnf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     corr_data = jsondecode(fileread(file_path));
 
     file_path = ['../../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     nf_data = jsondecode(fileread(file_path));
@@ -56,7 +56,7 @@ for i = 1:numel(D_values)
 
         % Plot the data on a logarithmic scale
         loglog(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
-        hold on;
+        hold on;5
 
         % Generate the legend entry for the current D value
         legend_entries{2 * i - 1 + band} = [band_name{band+1}, ', $D = ', num2str(D),'$' ];

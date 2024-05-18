@@ -48,5 +48,6 @@ l=legend('Location', 'best');
 set(l,'Box','off');set(l,'Interpreter','latex');
 set(l,'Fontsize',16);
 set(l,'Location','SouthWest');
+ylim([0.93,1.05]);
 %Display the plot
 %grid on;
