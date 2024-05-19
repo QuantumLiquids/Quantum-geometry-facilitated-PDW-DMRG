@@ -7,8 +7,8 @@ tsd_nn = 0;
 Uss = 8;
 Udd = 8;
 Usd = 8;
-Hole = Lx * Ly * 2 / 8;
-D_values = [5000,7000];
+Hole = Ly*Lx*2/8;
+D_values = [7000,10000,12000,15000,18000];
 
 trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08, 9.5e-09]';
 sc_corr_finite_D = [];

@@ -81,7 +81,8 @@ for i = 1:numel(D_values)
         ref_site_idx = sc_s{1}{1}(1); % C++ convention
         x = fix(ref_site_idx /(2*Ly)) + 1;
         y = mod(ref_site_idx, 2 * Ly) /2 +1;
-        radius = sqrt(abs(d_orbital_sc_correlation)) * 1.5 * circle_scale;
+        radius = sqrt(abs(s_orbital_sc_correlation)) * 1.5 * circle_scale;
+        side_length = 2 * radius;
         rectangle('Position', [x - side_length/2, y - side_length/2, side_length, side_length],...
           'Curvature', 0, 'FaceColor', 'none', 'EdgeColor', reference_point_color, 'LineWidth', 3);
 

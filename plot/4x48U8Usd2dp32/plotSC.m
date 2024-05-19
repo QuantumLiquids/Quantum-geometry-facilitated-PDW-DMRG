@@ -44,7 +44,7 @@ for i = 1:numel(D_values)
 
     % Plot the data on a logarithmic scale
     y_values = ((-1) .^ x_values) .* y_values;
-    loglog(x_values, y_values, 'o', 'MarkerSize', 6);
+    semilogy(x_values, y_values, 'o', 'MarkerSize', 6);
     hold on;
 
     % Generate the legend entry for the current D value

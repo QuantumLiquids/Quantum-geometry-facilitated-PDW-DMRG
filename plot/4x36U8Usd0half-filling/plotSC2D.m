@@ -1,0 +1,122 @@
+Ly = 3;
+Lx = 24;
+ts = 1;
+td = -1;
+tsd_xy = 1;
+tsd_nn = 0;
+Uss = 3.8;
+Udd = 3.7;
+Usd = 4.0;
+Hole = 8;
+D_values = [10000, 12000, 14000, 16000];
+
+
+bond_width = 2;
+bond_color = 'k';
+positive_sc_color = [233, 196, 107]/256;
+negative_sc_color = [042, 157, 142]/256;
+circle_scale = 10;
+legend_entries = cell(size(D_values));
+
+for i = 1:numel(D_values)
+    if i == numel(D_values)
+        D = D_values(i);
+        % Create the file path
+        file_path = ['../../data/onsitepair', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
+            'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
+            'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+
+        % Load the data from the JSON file
+        data = jsondecode(fileread(file_path));
+
+        % Filter the data based on data{i}{1}(1) == Lx * Ly / 2, the
+        % reference site is the s-orbital
+        sc_s = {};
+        sc_d = {};
+        counts = 1;
+        countd = 1;
+        for j = 1:numel(data)
+            if data{j}{1}(1) == Lx * Ly / 2
+                if mod(data{j}{1}(2) - data{j}{1}(1), 2 ) == 0
+                    sc_s{counts} = data{j};
+                    counts = counts + 1;
+                else
+                    sc_d{countd} = data{j};
+                    countd = countd + 1;
+                end
+            end
+        end
+
+        figure;
+        for x = 1:Lx
+            for y= 1:Ly
+                line([x,x],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;
+                if x < Lx
+                    line([x,x+1],[y,y],'color',bond_color,'linewidth',bond_width);  hold on;
+                end
+
+            end
+        end
+
+        for j = 1:numel(sc_s)
+            site_idx = sc_s{j}{1}(2); % C++ convention
+            s_orbital_sc_correlation = sc_s{j}{2};
+            x = fix(site_idx /(2*Ly)) + 1;
+            y = mod(site_idx, 2 * Ly) /2 +1;
+            center = [x, y];
+            radius = abs(s_orbital_sc_correlation) * circle_scale;
+            if s_orbital_sc_correlation >= 0
+                % Draw the disk using the rectangle function
+                rectangle('Position', [center(1)-radius, center(2)-radius, 2*radius, 2*radius],...
+                    'Curvature', [1, 1], 'FaceColor', positive_sc_color, 'EdgeColor', 'none');
+            else
+                rectangle('Position', [center(1)-radius, center(2)-radius, 2*radius, 2*radius],...
+                    'Curvature', [1, 1], 'FaceColor', negative_sc_color, 'EdgeColor', 'none');
+            end
+        end
+        ref_site_idx = sc_s{1}{1}(1); % C++ convention
+        x = fix(ref_site_idx /(2*Ly)) + 1;
+        y = mod(ref_site_idx, 2 * Ly) /2 +1;
+        plot(x, y, 'x', 'MarkerSize',10);
+        axis off;
+        axis equal;
+
+        %====== d orbital ======%
+        figure;
+        for x = 1:Lx
+            for y= 1:Ly
+                line([x,x],[y,y+1],'color',bond_color,'linewidth',bond_width);  hold on;
+                if x < Lx
+                    line([x,x+1],[y,y],'color',bond_color,'linewidth',bond_width);  hold on;
+                end
+
+            end
+        end
+
+        for j = 1:numel(sc_d)
+            site_idx = sc_d{j}{1}(2); % C++ convention
+            s_orbital_sc_correlation = sc_d{j}{2};
+            x = fix(site_idx /(2*Ly)) + 1;
+            y = mod(site_idx, 2 * Ly) /2 +1;
+            center = [x, y];
+            radius = abs(s_orbital_sc_correlation) * circle_scale;
+            if s_orbital_sc_correlation >= 0
+                % Draw the disk using the rectangle function
+                rectangle('Position', [center(1)-radius, center(2)-radius, 2*radius, 2*radius],...
+                    'Curvature', [1, 1], 'FaceColor', positive_sc_color, 'EdgeColor', 'none');
+            else
+                rectangle('Position', [center(1)-radius, center(2)-radius, 2*radius, 2*radius],...
+                    'Curvature', [1, 1], 'FaceColor', negative_sc_color, 'EdgeColor', 'none');
+            end
+        end
+        ref_site_idx = sc_d{1}{1}(1); % C++ convention
+        x = fix(ref_site_idx /(2*Ly)) + 1;
+        y = mod(ref_site_idx, 2 * Ly) /2 +1;
+        plot(x, y, 'x', 'MarkerSize',10);
+        axis off;
+        axis equal;
+    end
+
+end
+
+

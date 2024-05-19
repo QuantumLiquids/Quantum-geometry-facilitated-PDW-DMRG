@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 2;
 Hole = Lx * Ly * 2 / 8;
-D_values = [5000,9000,12000];
+D_values = [5000,9000,12000,15000];
 
 trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08, 9.5e-09]';
 sc_corr_finite_D = [];
@@ -82,7 +82,6 @@ end
 % loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
 
 
-hold off;
 
 % Set the labels and title
 set(gca,'fontsize',24);
