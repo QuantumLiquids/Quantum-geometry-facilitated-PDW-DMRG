@@ -3,7 +3,6 @@
 #ifndef PHONON_ELECTRON_OPERATORS2_H
 #define PHONON_ELECTRON_OPERATORS2_H
 #include "qlten/qlten.h"
-#include "./gqdouble.h"
 
 //Fermionic operators
 extern Tensor sz, sp, sm, id, sx, isy;//sy
