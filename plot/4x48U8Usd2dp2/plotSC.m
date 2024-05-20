@@ -6,11 +6,13 @@ tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 0.3;
-Hole = Lx * Ly * 2/8;
-D_values = [5000,7000,10000,15000];
+Usd = 2;
+Hole = Lx * Ly * 2 / 2;
+D_values = [5000];
 
-
+trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08, 9.5e-09]';
+sc_corr_finite_D = [];
+fit_length = 20;
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -43,45 +45,51 @@ for i = 1:numel(D_values)
     end
 
     % Plot the data on a logarithmic scale
-    semilogy(x_values, y_values, 'o', 'MarkerSize', 6);
+    y_values = ((-1) .^ x_values) .* y_values;
+    loglog(x_values, y_values, 'x', 'MarkerSize', 6);
     hold on;
-
+    
+    sc_corr_finite_D = [sc_corr_finite_D; y_values];
     % Generate the legend entry for the current D value
-    legend_entries{i} = ['$D = ', num2str(D),'$'];
-
-    % Fit a power-law function to the last group of x_values and y_values
-    log_x = log(x_values(x_values<20));
-    log_y = log(y_values(x_values<20));
-    fit = polyfit(log_x, log_y, 1);
-    K = -fit(1);
-    fprintf('Exponent K: %.4f\n', K);
-
-    % Plot the fitted line
-    x_guide = linspace(min(x_values), max(x_values), 100);
-    y_guide = exp(polyval(fit, log(x_guide)));
-
-    % Fit a exponential function to SC correlation
-    X = [ones(length(x_values(x_values<20)), 1), x_values(x_values<20)']; % Design matrix
-    coefficients = X \ log_y'; % Coefficients of the linear model
-
-    % Extract fitted parameters
-    intercept = coefficients(1);
-    slope = coefficients(2);
-    xi = -1/slope;
-    fprintf('correlation length xi : %f\n', xi);
-    if i == numel(D_values)
-        loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
+    if i == 1
+        legend_entries{i} = ['$D = ', num2str(D),'$'];
+    else
+        legend_entries{i} = ['$', num2str(D),'$'];
     end
 end
 
-hold off;
+
+% Extrapolation
+% sc_extraplt = zeros(1, size(sc_corr_finite_D, 2));
+% 
+% for col = 1:size(sc_corr_finite_D, 2)
+%     p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
+%     sc_extraplt(col) = polyval(p, 0);
+% end
+% loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
+% 
+% % Fit a power-law function to SC correlation
+% 
+% log_x = log(x_values(x_values<fit_length));
+% log_y = log(sc_extraplt(x_values<fit_length));
+% fit = polyfit(log_x, log_y, 1);
+% K = -fit(1);
+% fprintf('Exponent K: %.4f\n', K);
+% 
+% % Plot the fitted line
+% x_guide = linspace(min(x_values), max(x_values), 100);
+% y_guide = exp(polyval(fit, log(x_guide)));
+% loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
+
+
 
 % Set the labels and title
 set(gca,'fontsize',24);
 set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
-xlabel('$\Delta x$','Interpreter','latex');
-ylabel('$\langle\Delta(0)^\dagger \Delta(x)\rangle$','Interpreter','latex')
+xlabel('$r$','Interpreter','latex');
+%Phi(x) = \langle\Delta(0)^\dagger \Delta(x)\rangle
+ylabel('$\Phi(r) \cdot (-1)^r$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 
@@ -91,5 +99,8 @@ set(l,'Box','off');set(l,'Interpreter','latex');
 set(l,'Fontsize',24);
 set(l,'Location','SouthWest');
 
+% ylim([1e-3, 1e-1]);
+xlim([2 24])
+xticks([2,4,8,16,24]);
 % Display the plot
-grid on;
+% grid on;

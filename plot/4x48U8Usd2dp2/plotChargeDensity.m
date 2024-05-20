@@ -6,9 +6,10 @@ tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 0.3;
-Hole = Lx * Ly * 2/8;
-D_values = [5000,7000,10000,12000,15000];
+Usd = 2;
+Hole = Lx * Ly * 2 / 2;
+D_values = [5000];
+
 
 for i = 1:length(D_values)
     D = D_values(i);
