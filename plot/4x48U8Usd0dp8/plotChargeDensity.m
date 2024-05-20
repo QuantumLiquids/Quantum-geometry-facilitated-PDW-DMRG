@@ -8,8 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 0;
 Hole = Lx * Ly * 2/8;
-D_values = [5000,7000,9000,12000];
-
+D_values = [5000,7000,9000,12000,15000];
 for i = 1:length(D_values)
     D = D_values(i);
     % Create the file path
@@ -30,7 +29,7 @@ for i = 1:length(D_values)
     
     plot(x_values, n_s, '-o', 'DisplayName', ['$n_s, D = ', num2str(D),'$']);
     hold on;
-    plot(x_values, n_d, '-x', 'DisplayName', ['$n_d, D = ', num2str(D),'$']);
+    % plot(x_values, n_d, '-x', 'DisplayName', ['$n_d, D = ', num2str(D),'$']);
 end
 
 hold off;

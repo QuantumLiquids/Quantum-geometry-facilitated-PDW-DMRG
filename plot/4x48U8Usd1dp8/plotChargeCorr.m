@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 1;
 Hole = Lx * Ly * 2 / 8;
-D_values = [5000,7000];
+D_values = [5000,7000,10000];
 
 
 trunc_errs = 1./D_values;

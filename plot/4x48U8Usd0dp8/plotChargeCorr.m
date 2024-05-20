@@ -8,8 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 0;
 Hole = Lx * Ly * 2/8;
-D_values = [7000,9000,12000];
-
+D_values = [7000,9000,12000,15000];
 trunc_errs = 1./D_values;
 legend_entries = cell(size(D_values));
 nnd_corr_finite_D = [];
