@@ -12,12 +12,13 @@ D=20000;
 
 marker_size = 8;
 
-marker_colors{1} = [019, 103, 131]/256;
-marker_colors{2} = [255,158,002] / 256;
-marker_colors{3} = [251,056,071] / 256;
-marker_colors{4} = [131,064,028] / 256;
-marker_colors{5} = [075,116,178] / 256;
-marker_colors{6} = [107,112,092] / 256;
+marker_colors{1} = [99,178,238]/256;
+marker_colors{2} = [118,218,145] / 256;
+marker_colors{3} = [248,203,127] / 256;
+marker_colors{4} = [248,149,136] / 256;
+marker_colors{5} = [124,214,207] / 256;
+marker_colors{6} = [145,146,171] / 256;
+marker_colors{7} = [107,112,092] / 256;
 
 %SC
 file_path = ['../../data/onsitepair', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
@@ -72,11 +73,11 @@ fitted_ss = a_sc_ss * exp(-x_values / xi_sc);
 fitted_sd = a_sc_sd * exp(-x_values / lambda_sc_sd);
 
 % Plot the fitted data
-h_fit_ss = semilogy(x_values, fitted_ss, '--', 'LineWidth', 1.5,'Color',marker_colors{6}); hold on;
+h_fit_ss = semilogy(x_values, fitted_ss, '--', 'LineWidth', 1.5,'Color',marker_colors{7}); hold on;
 
 % Plot the data on a logarithmic scale
-h_sc_ss = semilogy(x_values, sc_ss, 'o', 'MarkerSize', marker_size);hold on;
-h_sc_sd = semilogy(x_values, -sc_sd, 'x', 'MarkerSize', marker_size);
+h_sc_ss = semilogy(x_values, sc_ss, 'o', 'MarkerSize', marker_size,'Color',marker_colors{1});hold on;
+h_sc_sd = semilogy(x_values, -sc_sd, 'x', 'MarkerSize', marker_size,'Color',marker_colors{2});
 
 
 %Charge density correlation
@@ -126,6 +127,8 @@ for band = [0,1] %s and d orbital
 end
 h_charge_ss = h(1);
 h_charge_sd = h(2);
+h(1).Color = marker_colors{3};
+h(2).Color = marker_colors{4};
 
 
 %fitting
@@ -143,7 +146,7 @@ xi_charge = -1 / p_charge(1); % Slope
 fitted_data = A * exp(-[2:1:20]/ xi_charge);
 
 % Plot the fitted data
-h_fit_charge = semilogy([2:1:20], fitted_data, '--', 'LineWidth', 1.5,'Color',marker_colors{6}); hold on;
+h_fit_charge = semilogy([2:1:20], fitted_data, '--', 'LineWidth', 1.5,'Color',marker_colors{7}); hold on;
 uistack(h_fit_charge,'bottom')
 
 %spin
@@ -194,6 +197,8 @@ spin_correlation_sd = -cellfun(@(entry) entry{2}, filtered_datad).';
 
 h_spin_ss = semilogy(x_value, abs(spin_correlation_ss),'<', 'MarkerSize',marker_size);
 h_spin_sd = semilogy(x_value, abs(spin_correlation_sd),'>','MarkerSize',marker_size);
+h_spin_ss.Color = marker_colors{5};
+h_spin_sd.Color = marker_colors{6};
 %fitting
 % Compute the logarithm of the data
 log_correlation = log(abs(spin_correlation_ss(1:10)));
@@ -201,7 +206,7 @@ p_spin_ss = polyfit(x_value(1:10), log_correlation, 1);
 A = exp(p_spin_ss(2)); % Intercept
 xi_s1 = -1 / p_spin_ss(1); % Slope
 fitted_data = A * exp(-[2:1:20]/ xi_s1);
-h_fit_spin = semilogy([2:1:20], fitted_data, '--', 'LineWidth', 1.5,'Color',marker_colors{6}); hold on;
+h_fit_spin = semilogy([2:1:20], fitted_data, '--', 'LineWidth', 1.5,'Color',marker_colors{7}); hold on;
 uistack(h_fit_spin,'bottom')
 
 log_correlation = log(abs(spin_correlation_sd(1:10)));

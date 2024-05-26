@@ -1,21 +1,21 @@
 Ly = 4;
-Lx = 48;
+Lx = 24;
 ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 0;
-Hole = Lx * Ly * 2/32;
-D_values = [12000,15000,18000];
+Usd = 0.3;
+mu = -4.7;
+D_values = [2000,4000];
 
 for i = 1:length(D_values)
     D = D_values(i);
     % Create the file path
     file_path = ['../../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd), 'mus', num2str(mu),'mud', num2str(mu), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     data = jsondecode(fileread(file_path));

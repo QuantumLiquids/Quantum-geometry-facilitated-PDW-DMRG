@@ -1,17 +1,16 @@
-Ly = 4;
-Lx = 48;
+% Define the initial values
+Ly = 3;
+Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
 Uss = 8;
 Udd = 8;
-Usd = 4;
+Usd = 8;
 Hole = Lx * Ly * 2/8;
-D_values = [5000,7000,10000,13000,16000,18000];
-trunc_errs = 1./D_values;
-% trunc_errs = [1.88e-06 1.23e-06  8.08e-07 5.66e-07  4.26e-07];
-% trunc_errs = 1./D_values;
+D_values = [5000];
+trunc_errs = [ 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08,4.64e-08]';
 sc_corr_finite_D = [];
 fit_length = 25;
 legend_entries = cell(size(D_values));
@@ -101,8 +100,8 @@ set(l,'Box','off');set(l,'Interpreter','latex');
 set(l,'Fontsize',24);
 set(l,'Location','SouthWest');
 
-% ylim([1e-3, 1e-1]);
-% xlim([2 32])
-% xticks([2,4,8,16,32]);
+ylim([1e-3, 1e-1]);
+xlim([2 32])
+xticks([2,4,8,16,32]);
 % Display the plot
 % grid on;
