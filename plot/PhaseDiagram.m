@@ -45,8 +45,8 @@ Usd = [0, 0, 0.3, 1,0.1];
 delta = [1/32, 1/8, 1/8, 1/8,1/2];
 h4 = scatter(Usd, delta,my_marker_size, "filled");
 
-Usd = [0.3,0.3];
-nf = [0.5648059912452188,  0.7319070158179012];
+Usd = [0.3,0.3,0.3];
+nf = [0.5648059912452188,  0.7455, 0.7819];
 delta = 1-nf ;
 scatter(Usd, delta, my_marker_size_square,"filled", 's', 'MarkerFaceColor', h4.CData); hold on;
 

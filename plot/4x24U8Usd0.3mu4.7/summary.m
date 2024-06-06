@@ -12,8 +12,8 @@ tsd_nn = 0;
 Uss = 8;
 Udd = 8;
 Usd = 0.3;
-mu = -4.6;
-D = 6000;
+mu = -4.7;
+D = 10000;
 
 % charge density
 file_path = ['../../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
@@ -67,7 +67,7 @@ set(gca,'fontsize',24);
 set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
 xlabel('$x$','Interpreter','latex');
-ylabel('$\langle \Delta(x)\rangle$','Interpreter','latex')
+ylabel('$\langle c_{i, \uparrow}^\dagger c_{i, \downarrow}^\dagger\rangle$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 

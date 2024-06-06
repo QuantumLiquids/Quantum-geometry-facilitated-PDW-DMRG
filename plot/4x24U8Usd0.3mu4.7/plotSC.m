@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 0.3;
 mu = -4.7;
-D_values = [2000,4000];
+D_values = [2000,4000,7000,9000];
 
 for i = 1:length(D_values)
     D = D_values(i);
