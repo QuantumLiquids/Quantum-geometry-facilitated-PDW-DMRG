@@ -129,6 +129,7 @@ link_libraries(
 add_executable(dmrg src/dmrg.cpp src/myutil.cpp src/operators.cpp)
 add_executable(measure1 src/measure1.cpp src/myutil.cpp src/operators.cpp)
 add_executable(measure2 src/measure2.cpp src/myutil.cpp src/operators.cpp)
+add_executable(measure_nk src/measure_nk.cpp src/myutil.cpp src/operators.cpp)
 #add_executable(measureSC src/measureSC.cpp src/myutil.cpp src/operators.cpp)
 
 add_executable(dmrg_spin src/dmrg_conserve_spin.cpp src/myutil.cpp src/operators_fermion_with_spin_u1.cpp)
