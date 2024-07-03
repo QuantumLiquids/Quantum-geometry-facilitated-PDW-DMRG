@@ -114,7 +114,7 @@ MeasuResSet<TenElemT> MeasureOneSiteOp(
   size_t N = mps.size();
   auto op_num = ops.size();
   MeasuResSet<TenElemT> measu_res_set(op_num);
-  for (auto &measu_res : measu_res_set) {
+  for (auto &measu_res: measu_res_set) {
     measu_res = MeasuRes<TenElemT>(N);
   }
 
@@ -176,7 +176,7 @@ MeasuResSet<TenElemT> MeasureOneSiteOp(
   auto N = mps.size();
   size_t res_num = sites.size();
   MeasuResSet<TenElemT> measu_res_set(op_num);
-  for (MeasuRes<TenElemT> &measu_res : measu_res_set) {
+  for (MeasuRes<TenElemT> &measu_res: measu_res_set) {
     measu_res.reserve(res_num);
   }
 
@@ -554,12 +554,22 @@ inline MeasuRes<TenElemT> MeasureTwoSiteOpGroup(
     const QLTensor<TenElemT, QNT> &inst_op = QLTensor<TenElemT, QNT>()
 ) {
   //move the center to site1
-  mps.LoadTen(initial_center, GenMPSTenName(mps_path, initial_center));
-  for (size_t j = initial_center; j < site1; j++) {
-    mps.LoadTen(j + 1, GenMPSTenName(mps_path, j + 1));
-    mps.LeftCanonicalizeTen(j);
-    mps.dealloc(j);
+  if (site1 >= initial_center) {
+    mps.LoadTen(initial_center, GenMPSTenName(mps_path, initial_center));
+    for (size_t j = initial_center; j < site1; j++) {
+      mps.LoadTen(j + 1, GenMPSTenName(mps_path, j + 1));
+      mps.LeftCanonicalizeTen(j);
+      mps.dealloc(j);
+    }
+  } else {
+    for (size_t j = 0; j <= initial_center; j++) {
+      mps.LoadTen(j, GenMPSTenName(mps_path, j));
+    }
+    for (size_t j = initial_center; j > site1; j--) {
+      mps.RightCanonicalizeTen(j);
+    }
   }
+
 
   //Contract mps[site1]*phys_ops1*dag(mps[site1])
   auto id_op_set = mps.GetSitesInfo().id_ops;
@@ -591,7 +601,9 @@ inline MeasuRes<TenElemT> MeasureTwoSiteOpGroup(
     if (inst_op == QLTensor<TenElemT, QNT>()) {
       while (eated_site < site2 - 1) {
         size_t eating_site = eated_site + 1;
-        mps.LoadTen(eating_site, GenMPSTenName(mps_path, eating_site));
+        if (mps(eating_site) == nullptr) {
+          mps.LoadTen(eating_site, GenMPSTenName(mps_path, eating_site));
+        }
         //Contract ptemp_ten*mps[eating_site]*dag(mps[eating_site])
         CtrctMidTen(mps, eating_site, id_op_set[eating_site], id_op_set[eating_site], ptemp_ten);
         eated_site = eating_site;
@@ -600,14 +612,18 @@ inline MeasuRes<TenElemT> MeasureTwoSiteOpGroup(
     } else {
       while (eated_site < site2 - 1) {
         size_t eating_site = eated_site + 1;
-        mps.LoadTen(eating_site, GenMPSTenName(mps_path, eating_site));
+        if (mps(eating_site) == nullptr) {  // else is for the case site1 < initial center
+          mps.LoadTen(eating_site, GenMPSTenName(mps_path, eating_site));
+        }
         CtrctMidTen(mps, eating_site, inst_op, id_op_set[eating_site], ptemp_ten);
         eated_site = eating_site;
         mps.dealloc(eated_site);
       }
     }
     //now site2-1 has been eaten.
-    mps.LoadTen(site2, GenMPSTenName(mps_path, site2));
+    if (mps(site2) == nullptr) {
+      mps.LoadTen(site2, GenMPSTenName(mps_path, site2));
+    }
     //Contract ptemp_ten*mps[site2]*ops2*dag(mps[site2]) gives the expected value.
     std::vector<size_t> tail_mps_ten_ctrct_axes1{0, 1, 2};
     std::vector<size_t> tail_mps_ten_ctrct_axes2{2, 0, 1};
