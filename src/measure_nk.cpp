@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   const SiteVec<TenElemT, U1U1QN> sites = SiteVec<TenElemT, U1U1QN>(N, pb_out);
   using FiniteMPST = qlmps::FiniteMPS<TenElemT, U1U1QN>;
   FiniteMPST mps(sites);
-  mps.Load();
+//  mps.Load();
   cout << "mps loaded" << endl;
   cout << "bond dimension of middle mps = ";
   cout << mps[N / 2].GetShape()[0] << endl;
@@ -78,10 +78,10 @@ int main(int argc, char *argv[]) {
     }
     measure_tasks.push_back(MeasureGroupTask(site1, site2));
   }
-  MeasureTwoSiteOp(mps, bupcF, bupa, measure_tasks, "single_particle_correlation0", world, f);
-  MeasureTwoSiteOp(mps, bdnc, Fbdna, measure_tasks, "single_particle_correlation1", world, f);
-  MeasureTwoSiteOp(mps, bupaF, bupc, measure_tasks, "single_particle_correlation2", world, f);
-  MeasureTwoSiteOp(mps, bdna, Fbdnc, measure_tasks, "single_particle_correlation3", world, f);
+  MeasureTwoSiteOp(mps, kMpsPath, bupcF, bupa, measure_tasks, "single_particle_correlation0", world, f);
+  MeasureTwoSiteOp(mps, kMpsPath, bdnc, Fbdna, measure_tasks, "single_particle_correlation1", world, f);
+  MeasureTwoSiteOp(mps, kMpsPath, bupaF, bupc, measure_tasks, "single_particle_correlation2", world, f);
+  MeasureTwoSiteOp(mps, kMpsPath, bdna, Fbdnc, measure_tasks, "single_particle_correlation3", world, f);
 
   endTime = clock();
   cout << "CPU Time : " << (double) (endTime - startTime) / CLOCKS_PER_SEC << "s" << endl;
