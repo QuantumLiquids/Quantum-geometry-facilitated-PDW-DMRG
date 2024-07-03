@@ -48,9 +48,9 @@ int main(int argc, char *argv[]) {
   using FiniteMPST = qlmps::FiniteMPS<TenElemT, U1U1QN>;
   FiniteMPST mps(sites);
 //  mps.Load();
-  cout << "mps loaded" << endl;
-  cout << "bond dimension of middle mps = ";
-  cout << mps[N / 2].GetShape()[0] << endl;
+//  cout << "mps loaded" << endl;
+//  cout << "bond dimension of middle mps = ";
+//  cout << mps[N / 2].GetShape()[0] << endl;
 
 
   /******** define the two site sets of two point function ********/
