@@ -53,18 +53,6 @@ int main(int argc, char *argv[]) {
 //  cout << mps[N / 2].GetShape()[0] << endl;
 
 
-  /******** define the two site sets of two point function ********/
-  vector<vector<size_t>> two_point_sites_setF;
-  size_t beginx = 0;
-  size_t endx = N;
-  two_point_sites_setF.reserve((endx - beginx) * (endx - beginx));
-  for (size_t i = 0; i < N; i++) {
-    for (size_t j = i + 1; j < N; j++) {
-      two_point_sites_setF.push_back({i, j});
-    }
-  }
-
-
   /******** define the measure_tasks ********/
   std::vector<MeasureGroupTask> measure_tasks;
   measure_tasks.reserve(N);
