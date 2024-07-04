@@ -578,13 +578,8 @@ inline MeasuRes<TenElemT> MeasureTwoSiteOpGroup(
   std::vector<size_t> head_mps_ten_ctrct_axes2{0, 2};
   std::vector<size_t> head_mps_ten_ctrct_axes3{0, 1};
   QLTensor<TenElemT, QNT> temp_ten0;
-  auto ptemp_ten = new QLTensor<TenElemT, QNT>;//TODO: delete
-  Contract(
-      &mps[site1], &phys_ops1,
-      {{1},
-       {0}},
-      &temp_ten0
-  );
+  auto ptemp_ten = new QLTensor<TenElemT, QNT>;
+  Contract(&mps[site1], &phys_ops1, {{1}, {0}}, &temp_ten0);
   QLTensor<TenElemT, QNT> mps_ten_dag = Dag(mps[site1]);
   Contract(
       &temp_ten0, &mps_ten_dag,
@@ -639,8 +634,9 @@ inline MeasuRes<TenElemT> MeasureTwoSiteOpGroup(
         &res_ten
     );
     measure_res[event] = MeasuResElem<TenElemT>({site1, site2}, res_ten());
-
-    mps.dealloc(site2);//according now code this site2 will load again in next loop. This may be optimized one day.
+  }
+  for (size_t i = 0; i < mps.size(); i++) {
+    mps.dealloc(i);
   }
   delete ptemp_ten;
   return measure_res;
