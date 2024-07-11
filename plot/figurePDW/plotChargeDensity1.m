@@ -12,12 +12,12 @@ ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
-Uss = 3.8;
-Udd = 3.7;
-Usd = 4.0;
-Hole = 24;
-D_values = [10000,12000,14000,16000,20000,24000];
-trunc_errs = [2.51e-07, 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08,4.64e-08];
+Uss = 8;
+Udd = 8;
+Usd = 8;
+Hole = Lx * Ly * 2/8;
+D_values = [5000,7000,9000,12000,15000];
+trunc_errs = [1.87e-08, 8.80e-09, 4.55e-09, 2.05e-09,1.07e-09] * 1e5;
 ns_finite_D_data = [];
 nd_finite_D_data = [];
 for i = 1:length(D_values)
@@ -25,7 +25,7 @@ for i = 1:length(D_values)
     % Create the file path
     file_path = ['../../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     data = jsondecode(fileread(file_path));
@@ -57,8 +57,10 @@ for col = 1:size(ns_finite_D_data, 2)
     p = polyfit(trunc_errs, nd_finite_D_data(:, col), 2);
     nd_extraplt(col) = polyval(p, 0);
 end
+% ns_extraplt = ns_finite_D_data(end, :);
+% nd_extraplt = nd_finite_D_data(end, :);
 hA1 = plot(x_coor+1, ns_extraplt, 'o', 'DisplayName', ['$n_s, D = ', num2str(D),'$'],'MarkerSize', 6); hold on;
-hA2 = plot(x_coor+1, nd_extraplt, '+', 'DisplayName', ['$n_d, D = ', num2str(D),'$'],'MarkerSize', 6);
+% hA2 = plot(x_coor+1, nd_extraplt, '+', 'DisplayName', ['$n_d, D = ', num2str(D),'$'],'MarkerSize', 6);
 
 
 % Fit Kc, plot Friedel oscillations
@@ -68,7 +70,7 @@ start_site = 3;
 fit_x = x_coor(start_site:Lx/2)+1;
 fit_ys = ns_extraplt(start_site : Lx/2);
 fit_yd = nd_extraplt(start_site : Lx/2);
-Q = 3*pi/8; %Momentum
+Q = 3*pi/4; %Momentum
 n0 = (Lx * Ly * 2 - Hole) / (Lx * Ly * 2);
 
 model = @(params, x) params(1) * cos(params(5) * x + params(2)) .* x.^(-params(3)/2) + params(4);
@@ -98,7 +100,7 @@ phi = params_fit(2);
 Kc = params_fit(3);
 Q = params_fit(5);
 fitted_curve = model(params_fit, x);
-h_fit_A2 =plot(x, fitted_curve, '-.'); hold on;
+% h_fit_A2 =plot(x, fitted_curve, '-.'); hold on;
 % Display fitted parameters
 fprintf('Fitted parameters:\n');
 fprintf('Kc (d-orbital): %f\n', Kc);

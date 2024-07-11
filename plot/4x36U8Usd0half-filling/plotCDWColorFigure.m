@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 0;
 Hole = 0;
-D_values = [5000];
+D_values = [20000];
 
 bond_width = 2;
 bond_color = 'k';
@@ -58,7 +58,12 @@ for i = 1:numel(D_values)
         % Create a single colorbar for both subplots
         % Position it to the right side of the figure
         h = colorbar;
+        colormap(flipud(colormap('summer')));
+        h.Ticks = [0.6, 0.8,1.0,1.2,1.4];
+        h.FontName ='Arial';
+        h.FontSize = 14;
         set(h, 'Position', [0.92 0.11 0.02 0.815]);
+        
 
         % Adjust the position of the colorbar to align with the subplots
         pos1 = get(subplot(2, 1, 1), 'Position');

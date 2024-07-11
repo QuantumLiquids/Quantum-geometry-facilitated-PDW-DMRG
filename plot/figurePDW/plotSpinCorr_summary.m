@@ -5,12 +5,13 @@ marker_colors{4} = [131,064,028] / 256;
 marker_colors{5} = [075,116,178] / 256;
 marker_colors{6} = [107,112,092] / 256;
 
-plotSpinCorr1
-hold on;
+% plotSpinCorr1
+% hold on;
 plotSpinCorr2
+hold on;
 plotSpinCorr3
 
-set(h1, 'MarkerEdgeColor', marker_colors{1});hold on;
+% set(h1, 'MarkerEdgeColor', marker_colors{1});hold on;
 set(h2, 'MarkerEdgeColor', marker_colors{3});hold on;
 set(h3, 'MarkerEdgeColor', marker_colors{4});hold on;
 
@@ -28,7 +29,7 @@ h_fit2.Color =  marker_colors{6};
 h_fit3.Color =  marker_colors{6};
 
 
-set(gca,'Children',[h1 h2 h3  h_fit1 h_fit2 h_fit3 ])
+set(gca,'Children',[h2 h3 h_fit2 h_fit3 ])
 
 ylim([1e-15, 1e-0]);
 
@@ -44,3 +45,4 @@ set(get(gca,'YLabel'),'FontName','Arial');
 
 
 xlim([0 15])
+set(gcf,'position',[1000,1000,400,300]);

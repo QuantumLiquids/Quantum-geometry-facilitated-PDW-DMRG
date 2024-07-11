@@ -5,12 +5,13 @@ marker_colors{4} = [131,064,028] / 256;
 marker_colors{5} = [075,116,178] / 256;
 marker_colors{6} = [107,112,092] / 256;
 
-plotSingleParticle1
-hold on;
+% plotSingleParticle1
+% hold on;
 plotSingleParticle2
+hold on;
 plotSingleParticle3
 
-set(h1, 'MarkerEdgeColor', marker_colors{1});hold on;
+% set(h1, 'MarkerEdgeColor', marker_colors{1});hold on;
 set(h2, 'MarkerEdgeColor', marker_colors{3});hold on;
 set(h3, 'MarkerEdgeColor', marker_colors{4});hold on;
 
@@ -23,12 +24,12 @@ set(h3, 'MarkerEdgeColor', marker_colors{4});hold on;
 % set(h3_negative, 'Color', marker_colors{4});
 % set(h3_negative, 'MarkerFaceColor',  marker_colors{4});
 
-h_fit1.Color =  marker_colors{6};
+% h_fit1.Color =  marker_colors{6};
 h_fit2.Color =  marker_colors{6};
 h_fit3.Color =  marker_colors{6};
 
 
-set(gca,'Children',[h1 h2 h3 h_fit1 h_fit2 h_fit3])
+set(gca,'Children',[h2 h3  h_fit2 h_fit3])
 
 set(gca,'fontsize',20);
 set(gca,'linewidth',1.5);
@@ -43,5 +44,6 @@ set(get(gca,'YLabel'),'FontName','Arial');
 
 set(gca,'YScale','log')
 ylim([1e-15, 1e-0]);
-xlim([0 25]);
+xlim([0 20]);
 box on;
+set(gcf,'position',[1000,1000,400,300]);

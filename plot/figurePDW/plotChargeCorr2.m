@@ -8,8 +8,8 @@ Uss = 8;
 Udd = 8;
 Usd = 8;
 Hole = Lx * Ly * 2 / 32;
-D_values = [7000,9000,12000,15000,18000,20000];
- trunc_errs = [ 2.72e-08, 1.49e-08,1.50e-08,  9.68e-09, 7.27e-09,6.18e-09]' * 1e5;
+D_values = [9000,12000,15000,18000,20000];
+ trunc_errs = [ 2.72e-08, 1.49e-08, 9.68e-09, 7.27e-09,6.20e-09]' * 1e5;
 legend_entries = cell(size(D_values));
 nnd_corr_finite_D = [];
 nns_corr_finite_D = [];
@@ -72,15 +72,18 @@ end
 
 
 % Extrapolation
-nns_extraplt = zeros(1, size(nns_corr_finite_D, 2));
-nnd_extraplt = zeros(1, size(nnd_corr_finite_D, 2));
+% nns_extraplt = zeros(1, size(nns_corr_finite_D, 2));
+% nnd_extraplt = zeros(1, size(nnd_corr_finite_D, 2));
+% 
+% for col = 1:size(nnd_corr_finite_D, 2)
+%     p = polyfit(trunc_errs, nns_corr_finite_D(:, col), 2);
+%     nns_extraplt(col) = polyval(p, 0);
+%     p = polyfit(trunc_errs, nnd_corr_finite_D(:, col), 2);
+%     nnd_extraplt(col) = polyval(p, 0);
+% end
 
-for col = 1:size(nnd_corr_finite_D, 2)
-    p = polyfit(trunc_errs, nns_corr_finite_D(:, col), 2);
-    nns_extraplt(col) = polyval(p, 0);
-    p = polyfit(trunc_errs, nnd_corr_finite_D(:, col), 2);
-    nnd_extraplt(col) = polyval(p, 0);
-end
+nns_extraplt = nns_corr_finite_D(end,:);
+nnd_extraplt = nnd_corr_finite_D(end,:);
 positiveIndices = nns_extraplt >= 0;
 negativeIndices = nns_extraplt < 0;
 h2 = loglog(x_values(positiveIndices), nns_extraplt(positiveIndices), '>','MarkerSize', 6); hold on;
@@ -95,7 +98,7 @@ for band = 0
     else
         y_values =nnd_extraplt;
     end
-    indices = ismember(x_values, [4,6,8,10,17,24]);
+    indices = ismember(x_values, [10,17,24]);
     log_x = log(x_values(indices));
     log_y = log(abs(y_values(indices)));
     fit = polyfit(log_x, log_y, 1);

@@ -12,12 +12,18 @@ D=20000;
 
 marker_size = 8;
 
-marker_colors{1} = [99,178,238]/256;
-marker_colors{2} = [118,218,145] / 256;
-marker_colors{3} = [248,203,127] / 256;
-marker_colors{4} = [248,149,136] / 256;
-marker_colors{5} = [124,214,207] / 256;
-marker_colors{6} = [145,146,171] / 256;
+% marker_colors{1} = [99,178,238]/256;
+% marker_colors{2} = [118,218,145] / 256;
+% marker_colors{3} = [248,203,127] / 256;
+% marker_colors{4} = [248,149,136] / 256;
+% marker_colors{5} = [124,214,207] / 256;
+% marker_colors{6} = [145,146,171] / 256;
+marker_colors{1} = [78,171,144] /256;
+marker_colors{2} = [142,182,156] / 256;
+marker_colors{3} = [237,221,195] / 256;
+marker_colors{4} = [238,191,109] / 256;
+marker_colors{5} = [217,079,051] / 256;
+marker_colors{6} = [131, 64, 38] / 256;
 marker_colors{7} = [107,112,092] / 256;
 
 %SC
@@ -241,4 +247,4 @@ set(l, 'Box', 'off');
 set(l, 'Interpreter', 'latex');
 set(l, 'FontSize', 18);
 
-
+set(gcf,'position',[1000,1000,400,300]);

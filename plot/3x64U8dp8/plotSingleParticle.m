@@ -1,17 +1,16 @@
-clear all;
-figure;
+% Define the initial values
 Ly = 3;
 Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
-Uss = 3.8;
-Udd = 3.7;
-Usd = 4.0;
-Hole = 24;
-D_values = [12000,14000,16000,20000,24000];
-trunc_errs = [ 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08,4.64e-08]';
+Uss = 8;
+Udd = 8;
+Usd = 8;
+Hole = Lx * Ly * 2/8;
+D_values = [5000,7000,9000,12000,15000];
+trunc_errs = [1.87e-08, 8.80e-09, 4.55e-09, 2.05e-09,1.07e-09] * 1e5;
 corr_finite_D = [];
 fit_length = 24;
 legend_entries = cell(size(D_values));
@@ -22,7 +21,7 @@ for i = 1:numel(D_values)
     % Create the file path
     file_path = ['../../data/bupcbupa', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     data = jsondecode(fileread(file_path));
@@ -111,3 +110,4 @@ box on;
 % xticks([2,4,8,16,32]);
 % Display the plot
 % grid on;
+set(gcf,'position',[1000,1000,450,350]);

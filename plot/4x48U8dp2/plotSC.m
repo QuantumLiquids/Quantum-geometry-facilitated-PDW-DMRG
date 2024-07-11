@@ -8,8 +8,8 @@ Uss = 8;
 Udd = 8;
 Usd = 8;
 Hole = Lx * Ly * 2 / 2;
-D_values = [5000];
-
+D_values = [5000,7000,10000,15000];
+trunc_errs = 1./D_values;
 % trunc_errs = [ 4.27e-08,2.72e-08, 1.49e-08, 9.5e-09]';
 sc_corr_finite_D = [];
 fit_length = 20;
@@ -60,13 +60,13 @@ end
 
 
 % Extrapolation
-% sc_extraplt = zeros(1, size(sc_corr_finite_D, 2));
-% 
-% for col = 1:size(sc_corr_finite_D, 2)
-%     p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
-%     sc_extraplt(col) = polyval(p, 0);
-% end
-% loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
+sc_extraplt = zeros(1, size(sc_corr_finite_D, 2));
+
+for col = 1:size(sc_corr_finite_D, 2)
+    p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
+    sc_extraplt(col) = polyval(p, 0);
+end
+loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
 % 
 % % Fit a power-law function to SC correlation
 % 

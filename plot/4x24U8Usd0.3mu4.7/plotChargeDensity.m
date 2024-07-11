@@ -7,9 +7,8 @@ tsd_nn = 0;
 Uss = 8;
 Udd = 8;
 Usd = 0.3;
-mu = -4.7;
-D_values = [2000,4000];
-
+mu = -4.6;
+D_values = [2000,4000,6000,8000,9000];
 for i = 1:length(D_values)
     D = D_values(i);
     % Create the file path
@@ -19,7 +18,8 @@ for i = 1:length(D_values)
 
     % Load the data from the JSON file
     data = jsondecode(fileread(file_path));
-
+    doping = 1 - mean(data(:,2));
+    fprintf("D = %i, doping = %.4f\n", D, doping);
     s_data = data(mod(data(:, 1), 2*Ly) == 0, :);
     d_data = data(mod(data(:, 1), 2*Ly) == 1, :);
     

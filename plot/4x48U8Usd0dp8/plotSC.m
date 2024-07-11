@@ -8,7 +8,7 @@ Uss = 8;
 Udd = 8;
 Usd = 0;
 Hole = Lx * Ly * 2/8;
-D_values = [7000,9000,12000,15000];
+D_values = [7000,9000,12000,15000,20000];
 
 trunc_errs = 1./D_values;
 sc_corr_finite_D = [];
@@ -45,7 +45,7 @@ for i = 1:numel(D_values)
     end
 
     % Plot the data on a logarithmic scale
-    loglog(x_values, y_values, 'o', 'MarkerSize', 6);
+    semilogy(x_values, y_values, '-o', 'MarkerSize', 6);
     hold on;
 
     % Generate the legend entry for the current D value
@@ -90,7 +90,7 @@ for col = 1:size(sc_corr_finite_D, 2)
     p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
     sc_extraplt(col) = polyval(p, 0);
 end
-loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
+% loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
 
 % Fit a power-law function to SC correlation
 
@@ -103,7 +103,7 @@ fprintf('Exponent K: %.4f\n', K);
 % Plot the fitted line
 x_guide = linspace(min(x_values), max(x_values), 100);
 y_guide = exp(polyval(fit, log(x_guide)));
-loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
+% loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
 
 
 % Set the labels and title
@@ -122,4 +122,4 @@ set(l,'Fontsize',24);
 set(l,'Location','SouthWest');
 
 % Display the plot
-grid on;
+% grid on;

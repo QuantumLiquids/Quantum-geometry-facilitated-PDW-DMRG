@@ -1,17 +1,16 @@
-clear all;
-figure;
 Ly = 3;
 Lx = 64;
 ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
-Uss = 3.8;
-Udd = 3.7;
-Usd = 4.0;
-Hole = 24;
-D_values = [10000,12000,14000,16000,20000];
-trunc_errs = [2.51e-07, 1.75e-07, 1.29e-07, 9.92e-08,6.5e-08]';
+Uss = 8;
+Udd = 8;
+Usd = 8;
+Hole = Lx * Ly * 2/8;
+D_values = [5000,7000,9000,12000,15000];
+trunc_errs = [1.87e-08, 8.80e-09, 4.55e-09, 2.05e-09,1.07e-09] * 1e5;
+% trunc_errs = 1./D_values;
 legend_entries = cell(size(D_values));
 nnd_corr_finite_D = [];
 nns_corr_finite_D = [];
@@ -21,14 +20,14 @@ for i = 1:numel(D_values)
     % Create the file path
     file_path = ['../../data/nfnf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     corr_data = jsondecode(fileread(file_path));
 
     file_path = ['../../data/nf', num2str(Ly), 'x', num2str(Lx), 'ts', num2str(ts), 'td', num2str(td), ...
         'tsd_xy', num2str(tsd_xy), 'tsd_nn', num2str(tsd_nn), 'Uss', num2str(Uss), 'Udd', num2str(Udd), ...
-        'Usd', num2str(Usd, '%.1f'), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
+        'Usd', num2str(Usd), 'Hole', num2str(Hole), 'D', num2str(D), '.json'];
 
     % Load the data from the JSON file
     nf_data = jsondecode(fileread(file_path));
@@ -63,8 +62,8 @@ for i = 1:numel(D_values)
             nnd_corr_finite_D = [nnd_corr_finite_D;y_values];
         end
         % Plot the data on a logarithmic scale
-        % loglog(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6);
-        % hold on;
+        % loglog(x_values, abs(y_values), markers_band(band+1), 'MarkerSize', 6); hold on;
+        
 
         % Generate the legend entry for the current D value
         legend_entries{2 * i - 1 + band} = [band_name{band+1}, ', $D = ', num2str(D),'$' ];
@@ -93,7 +92,7 @@ for band = [0,1]
     else
         y_values =nnd_extraplt;
     end
-    indices = ismember(x_values, [3, 8, 9, 14,19,20,24,25]);
+    indices = ismember(x_values, 4:3:20);
     log_x = log(x_values(indices));
     log_y = log(abs(y_values(indices)));
     fit = polyfit(log_x, log_y, 1);
@@ -128,3 +127,4 @@ set(l,'Location','SouthWest');
 xlim([2 32])
 xticks([2,4,8,16,32]);
 
+set(gcf,'position',[1000,1000,450,350]);

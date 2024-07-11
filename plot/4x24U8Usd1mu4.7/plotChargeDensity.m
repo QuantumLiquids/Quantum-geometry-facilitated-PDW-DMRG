@@ -19,6 +19,8 @@ for i = 1:length(D_values)
 
     % Load the data from the JSON file
     data = jsondecode(fileread(file_path));
+    doping = 1 - mean(data(:,2));
+    fprintf("D = %i, doping = %.4f\n", D, doping);
 
     s_data = data(mod(data(:, 1), 2*Ly) == 0, :);
     d_data = data(mod(data(:, 1), 2*Ly) == 1, :);

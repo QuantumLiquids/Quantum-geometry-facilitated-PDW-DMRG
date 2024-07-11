@@ -36,9 +36,11 @@ set(get(gca,'YLabel'),'FontSize',20);
 set(get(gca,'XLabel'),'FontName','Arial');
 set(get(gca,'YLabel'),'FontName','Arial');
 
-legend_entries = {'Parameter A', 'B', 'C'};
+legend_entries = {'3-leg \delta=1/8', '4-leg \delta=1/32', '4-leg \delta=1/8'};
 l=legend([h1,h2,h3],legend_entries, 'Location', 'best');
 set(l,'Box','off');
 % set(l,'Interpreter','latex');
 set(l,'Fontsize',20);
 set(l,'Location','SouthWest');
+
+set(gcf,'position',[1000,1000,400,300]);

@@ -104,5 +104,6 @@ set(l,'Location','SouthWest');
 ylim([1e-3, 1e-1]);
 xlim([2 32])
 xticks([2,4,8,16,32]);
+set(gcf,'position',[1000,1000,450,350]);
 % Display the plot
 % grid on;
