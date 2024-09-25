@@ -1,16 +1,17 @@
-Ly = 4;
-Lx = 48;
+Ly = 3;
+Lx = 24;
 ts = 1;
 td = -1;
 tsd_xy = 1;
 tsd_nn = 0;
-Uss = 8;
-Udd = 8;
-Usd = 1;
-Hole = Lx * Ly * 2/32;
-D_values = [10000,15000,18000];
-
-
+Uss = 2;
+Udd = 2;
+Usd = 2;
+Hole = 16;
+D_values = [10000];
+% trunc_errs = [ 1.59e-07,1.12e-07, 8.17e-08,4.87e-08,3.21e-08]';
+sc_corr_finite_D = [];
+fit_length = 25;
 legend_entries = cell(size(D_values));
 
 for i = 1:numel(D_values)
@@ -43,27 +44,43 @@ for i = 1:numel(D_values)
     end
 
     % Plot the data on a logarithmic scale
- 
-    loglog(x_values, y_values, 'o', 'MarkerSize', 6);
+    y_values = ((-1) .^ x_values) .* y_values;
+    loglog(x_values, y_values, 'x', 'MarkerSize', 6);
     hold on;
-
-    % Generate the legend entry for the current D value
-    legend_entries{i} = ['$D = ', num2str(D),'$'];
     
-    % Fit a power-law function to the last group of x_values and y_values
-    if i == numel(D_values)
-        log_x = log(x_values(x_values<20));
-        log_y = log(y_values(x_values<20));
-        fit = polyfit(log_x, log_y, 1);
-        K = -fit(1);
-        fprintf('Exponent K: %.4f\n', K);
-        
-        % Plot the fitted line
-        x_guide = linspace(min(x_values), max(x_values), 100);
-        y_guide = exp(polyval(fit, log(x_guide)));
-        loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
+    sc_corr_finite_D = [sc_corr_finite_D; y_values];
+    % Generate the legend entry for the current D value
+    if i == 1
+        legend_entries{i} = ['$D = ', num2str(D),'$'];
+    else
+        legend_entries{i} = ['$', num2str(D),'$'];
     end
 end
+
+
+% Extrapolation
+% sc_extraplt = zeros(1, size(sc_corr_finite_D, 2));
+% 
+% for col = 1:size(sc_corr_finite_D, 2)
+%     p = polyfit(trunc_errs, sc_corr_finite_D(:, col), 2);
+%     sc_extraplt(col) = polyval(p, 0);
+% end
+
+sc_extraplt = sc_corr_finite_D(end,:);
+loglog(x_values, sc_extraplt, '-o', 'MarkerSize', 8); hold on;
+
+% Fit a power-law function to SC correlation
+
+log_x = log(x_values(x_values<fit_length));
+log_y = log(sc_extraplt(x_values<fit_length));
+fit = polyfit(log_x, log_y, 1);
+K = -fit(1);
+fprintf('Exponent K: %.4f\n', K);
+
+% Plot the fitted line
+x_guide = linspace(min(x_values), max(x_values), 100);
+y_guide = exp(polyval(fit, log(x_guide)));
+loglog(x_guide, y_guide, 'r--', 'LineWidth', 1.5);
 
 hold off;
 
@@ -71,8 +88,9 @@ hold off;
 set(gca,'fontsize',24);
 set(gca,'linewidth',1.5);
 set(get(gca,'Children'),'linewidth',2);
-xlabel('$\Delta x$','Interpreter','latex');
-ylabel('$\langle\Delta(0)^\dagger \Delta(x)\rangle $','Interpreter','latex')
+xlabel('$ x$','Interpreter','latex');
+%Phi(x) = \langle\Delta(0)^\dagger \Delta(x)\rangle
+ylabel('$\Phi(x) \cdot (-1)^x$','Interpreter','latex')
 set(get(gca,'XLabel'),'FontSize',24);
 set(get(gca,'YLabel'),'FontSize',24);
 
@@ -82,5 +100,8 @@ set(l,'Box','off');set(l,'Interpreter','latex');
 set(l,'Fontsize',24);
 set(l,'Location','SouthWest');
 
+% ylim([1e-3, 1e-1]);
+% xlim([2 12])
+% xticks([2,4,8,12,]);
 % Display the plot
-grid on;
+% grid on;
